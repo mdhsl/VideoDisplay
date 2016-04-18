@@ -34,6 +34,8 @@ loaded here -->
 <!-- sync lib -->
 <script type="text/javascript" src="common/js/sync.js"></script>
 
+<script type="text/javascript" src="common/js/controller.js"></script>
+
 </head>
 
 <body ng-app="app">
@@ -52,16 +54,17 @@ loaded here -->
 <script>
  
 var properties = [
-  {
-		name : "2D Map",
-		url  : "viewers/Leaflet/leaflet.html",
-		renderDivId :  "leafletViewerId",
-		defaultWidget : true
-	},
+  
 	{
 		name : "Video",
 		url  : "viewers/Video/video.html",
 		renderDivId :  "videoViewerId",
+		defaultWidget : true
+	},
+  {
+		name : "2D Map",
+		url  : "viewers/Leaflet/leaflet.html",
+		renderDivId :  "leafletViewerId",
 		defaultWidget : true
 	},
 	{
@@ -72,11 +75,17 @@ var properties = [
 	}
 ];
 
-var buffer = Buffer.getBufferSingleton();
+//default options: synchronized: false, startTime = null, endTime = null, replayFactor = null
 
-buffer.setStartDate(new Date("2015-02-16T07:58:00Z"));
-buffer.setEndDate(new Date("2015-02-16T08:09:00Z"));
-buffer.setReplayFactor(3);
+var controller = OSH.Controller.getSingleton();
+
+//TODO:change into synchronized:true/false
+//setMode => setOptions
+controller.setMode(BUFFER_MODE.REPLAY, { 
+     startTime: new Date("2015-02-16T07:58:00Z"),
+     endTime: new Date("2015-02-16T08:09:00Z"),
+     replayFactor: 3
+  });
 
 addWidgets(properties);	
 </script>

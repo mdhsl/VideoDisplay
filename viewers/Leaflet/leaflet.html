@@ -13,7 +13,7 @@ var pathCoordinates = [];
 var lastTime = new Date().getTime();
 
 var UTCAndroidShiftTime = 16 * 1000;
-var buffer = Buffer.getBufferSingleton();
+var url = "ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-02-16T07:58:00Z/2015-02-16T08:09:00Z&replaySpeed=3";
 
 function initmap() {
     // set up the map
@@ -54,8 +54,6 @@ function initmap() {
     path.addTo(map);
 }
 
-var clientId = "1260ea0d-d2ac-407d-8dcc-1b03f5c8c8ff";
-
 function onCallback(data) {
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
@@ -92,23 +90,17 @@ function onCallback(data) {
 
 function initStream() {
 
-    // GPS
-    // query SOS GPS stream
-    var ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-02-16T07:58:00Z/2015-02-16T08:09:00Z&replaySpeed=3");
-    ws.binaryType = 'arraybuffer';
-    ws.onmessage = function(event) {
+    var timeStampParser = function(data) {
         var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
         var tokens = rec.trim().split(",");
         var date = new Date(tokens[0]);
-        buffer.push(clientId, event.data, date.getTime() - UTCAndroidShiftTime, "text", "Leaflet GPS data");
-    }
-
-    ws.onerror = function(event) {
-        ws.close();
-    }
+        return date.getTime() - UTCAndroidShiftTime;
+    };
+    
+    var controller = OSH.Controller.getSingleton();
+    OSH.Controller.getSingleton().addDataSource(this,url,"text",timeStampParser,onCallback);
 }
 
-buffer.register(clientId, onCallback);
 initmap();
 initStream();
 </script>	

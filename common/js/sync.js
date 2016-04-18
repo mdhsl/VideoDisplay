@@ -154,3 +154,25 @@ Buffer.prototype.switchMode = function(mode){
 		this.buffer = new Array();
 	}
 }
+
+//TBD dupplicated
+Buffer.prototype.reset = function(){
+  if(this.currentMode == BUFFER_MODE.REPLAY){
+			this.bufferDelay = defaultDelay;
+			this.currentMode = BUFFER_MODE.REPLAY;
+			this.startCurrentTime = null;
+			this.startedBuffering = false;
+			this.noData = false;
+		} else if(this.currentMode == BUFFER_MODE.REALTIME){
+			this.bufferDelay = 0;
+			this.currentMode = BUFFER_MODE.REALTIME;
+			this.startCurrentTime = new Date().getTime();
+			this.startedBuffering = true;
+			this.noData = true;
+		}
+		this.buffer = new Array();
+}
+
+Buffer.prototype.getMode = function(){
+	return this.currentMode;
+}

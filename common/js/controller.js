@@ -88,10 +88,10 @@ OSH.Controller.prototype.addDataSource = function(object,url,name,timeStampParse
     
     var timeStamp = new Date().getTime();
     
-    /*if(timeStampParser != null) {
+    if(timeStampParser != null) {
         //time stamp to synchronize the data
         timeStamp = timeStampParser(event.data);
-    } */
+    }
     
     this.buffer.push(uuid, event.data, timeStamp , name, name+"-"+uuid);
   }.bind(this);

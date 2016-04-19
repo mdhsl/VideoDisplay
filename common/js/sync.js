@@ -1,27 +1,33 @@
 ////////
 
-var BUFFER_MODE = {
-  REALTIME: 0,
-  REPLAY : 1
+var instance = null;
+
+var STATE = {
+  NONE: 0,
+  BUFFERING : 1,
+  READY:2
+  
 };
 
-var instance = null;
-const defaultDelay = 10 * 1000;
-
+/**
+ * The buffer is in charge of buffering data given a buffering parameter.
+ * If this parameter is equals to 0, so the data are directly sent back
+ */ 
 var Buffer = function(){
 	this.startCurrentTime = null;
-	this.startRealTime = null;
-	this.endRealTime = null;
+	this.startDataTime = new Date().getTime();
+	this.endDataTime = null;
 	this.replayFactor = null;
 	this.buffer = new Array();
 	this.clientTable = new Hashtable();
 	this.observers = new Array();
-	this.startedBuffering = false;
-	this.bufferDelay = defaultDelay;
-	this.currentMode = BUFFER_MODE.REPLAY;
-	this.noData = true;
+	this.bufferState = 0;
+	this.bufferDelay = 0; // default buffering time in ms
 }
 
+/**
+ * Get a single instance of the buffer
+ */ 
 Buffer.getBufferSingleton = function() {
 	if(instance == null){
 		instance = new Buffer();
@@ -29,150 +35,166 @@ Buffer.getBufferSingleton = function() {
 	return instance;
 }
 
-
+/**
+ * Set the buffering time before sending back the data to the corresponding client
+ */ 
 Buffer.prototype.setDelay = function(delay){
 	this.bufferDelay = delay;
 }
 
-Buffer.prototype.setStartDate = function(date) {
-	this.startRealTime = date.getTime();
-}
-
-Buffer.prototype.setEndDate = function(date){
-	this.endRealTime = date.getTime();
-}
-
+/**
+ * Set the replay factor to compute the waiting time between two data (based on their timestamps)
+ */  
 Buffer.prototype.setReplayFactor = function(replayFactor){
+  if(replayFactor <= 0 ) {
+    //cannot be <= 0
+    this.replayFactor = 1;
+  }
 	this.replayFactor = replayFactor;
 }
 
+/**
+ * Add observer to be notified when a data is handling
+ */
 Buffer.prototype.addObserver = function(observerCB){
 	this.observers.push(observerCB);
 }
 
 //buffering
+/**
+ * Push the data into buffer and process them. The observers are notified that a data just come here.
+ * If a buffering time has been defined, the processing will start after.
+ */ 
 Buffer.prototype.push = function(id,data,timeStamp,type,name){
-	//start buffering if first data received
-	if(!this.startedBuffering){
-		this.startedBuffering = true;
-		this.start();
-	} 
+   var datum = {
+		  id : id, 
+		  data : data, 
+		  timeStamp : timeStamp
+	  }
 	
-	var datum = {
-		id : id, 
-		data : data, 
-		timeStamp : timeStamp
-	}
-	
-	//TBD : improve sort !
+  // pushes data into the buffer
 	this.buffer.push(datum);
-	this.buffer.sort(function (a, b) {
-		if (a.timeStamp > b.timeStamp) {
-			return 1;
-		}
-		if (a.timeStamp < b.timeStamp) {
-			return -1;
-		}
-		return 0;
-	});
-	if(this.observers.length > 0){
-		//callback 
-		var percent = ((timeStamp - this.startRealTime) * 100 ) / (this.endRealTime - this.startRealTime);
-		for(var i = 0; i < this.observers.length; i++){
-			var callback = this.observers[i];
-			callback(
-				{
-					percent : percent.toFixed(2),
-					type : type,
-					name: name,
-					timeStamp : timeStamp,
-					received : new Date().getTime(),
-					data : data
-				}
-			);
-		}
-	}
-	//handle case where some data come after the last computeNextData chaining
-	var currentEllapsedTime = new Date().getTime() - this.startCurrentTime;
-	if(this.bufferDelay - currentEllapsedTime < 0 && this.noData && this.startCurrentTime != null){
-		this.computeNextData();
-	}
+  
+  // notifies the observers
+  this.callbackObservers(type,name,timeStamp,data);
+  
+  // update the start data time if needed
+  if(this.startDataTime > datum.timeStamp) {
+    this.startDataTime = datum.timeStamp;
+  }	
+  
+  // at the first buffer initialization
+  if(this.bufferState == STATE.NONE) {
+    // start buffering 
+    this.bufferState = STATE.BUFFERING;
+    this.start();
+  }
+
+  // the buffering is done, start to send back data to the corresponding clients
+  if(this.bufferState == STATE.READY) {
+    this.buffer.sort(function (a, b) {
+        if (a.timeStamp > b.timeStamp) {
+          return 1;
+        }
+        if (a.timeStamp < b.timeStamp) {
+          return -1;
+        }
+        return 0;
+    });
+    
+    // the buffer is empty and the processNextData recursive method is finished, so process the data and start a new 
+    // recursive loop
+    if(this.buffer.length == 1) {
+      this.processNextData();
+    }
+  } 
 }
 
-Buffer.prototype.computeNextData = function(){
+/**
+ * Processes the data. Computes the time to wait between two data (based on timeStamp).
+ */ 
+Buffer.prototype.processNextData = function(){
+  // computes the ellasped time
 	var currentEllapsedTime = new Date().getTime() - this.startCurrentTime;
+  // if the buffer has data
 	if(this.buffer.length > 0) {
-		this.noData = false;
 		var next = this.buffer[0];
-		var waitTime = (((next.timeStamp-this.startRealTime) / this.replayFactor) - currentEllapsedTime) * this.currentMode;
-		if( waitTime > 0 ){
-			window.setTimeout(function(){
-				this.waitCB();
-			}.bind(this),waitTime);
-		} else {
-			this.waitCB();
-		}
-	} else {
-		this.noData = true;
-	}
+		var waitTime = (((next.timeStamp-this.startDataTime) / this.replayFactor) - currentEllapsedTime);
+  
+    // this is not true in case of real time data    
+    if(waitTime > 0) {
+      //callback the data after waiting for a time equals to the difference between the two timeStamps
+      window.setTimeout(function(){
+        this.callbackData();
+      }.bind(this),waitTime);
+    } else {
+        // in case of real time data, the data is callback directly
+        this.callbackData();
+    }
+	} 
 }
 
-Buffer.prototype.waitCB = function(){
+/**
+ * Callback the data to the client. Once the data sent, the next one is processed.
+ */
+Buffer.prototype.callbackData = function(){
+  // removes the first elements of buffer
 	var next = this.buffer.shift();
-	if(typeof(next) != 'undefined'){
+	if(typeof(next) != 'undefined' && !isNaN(next.timeStamp)){
+    // callback the data to the client
 		this.clientTable.get(next.id)(next.data);
 	}
-	this.computeNextData();
+  // recursive call
+	this.processNextData();
 }
 
+/**
+ * Callback stats to observers
+ */ 
+Buffer.prototype.callbackObservers = function(type,name,timeStamp,data) {
+  if(this.observers.length > 0){
+      //callback  to observers
+      var percent = ((timeStamp - this.startRealTime) * 100 ) / (this.endRealTime - this.startRealTime);
+      for(var i = 0; i < this.observers.length; i++){
+        var callback = this.observers[i];
+        callback(
+          {
+            percent : percent.toFixed(2),
+            type : type,
+            name: name,
+            timeStamp : timeStamp,
+            received : new Date().getTime(),
+            data : data
+          }
+        );
+      }
+	  }
+}
+
+/**
+ *  Registers a new client
+ */ 
 Buffer.prototype.register = function(id,callback){
 	this.clientTable.put(id,callback);
 }
 
+/**
+ * Starts buffering data
+ */ 
 Buffer.prototype.start = function(){
 	window.setTimeout(function(){
+    this.bufferState = STATE.READY;
 		this.startCurrentTime = new Date().getTime();
-		this.computeNextData();
+		this.processNextData();
 	 }.bind(this),this.bufferDelay);
 }
 
-Buffer.prototype.switchMode = function(mode){
-	if(mode != this.currentMode){
-		if(mode == BUFFER_MODE.REPLAY){
-			this.bufferDelay = defaultDelay;
-			this.currentMode = BUFFER_MODE.REPLAY;
-			this.startCurrentTime = null;
-			this.startedBuffering = false;
-			this.noData = false;
-		} else if(mode == BUFFER_MODE.REALTIME){
-			this.bufferDelay = 0;
-			this.currentMode = BUFFER_MODE.REALTIME;
-			this.startCurrentTime = new Date().getTime();
-			this.startedBuffering = true;
-			this.noData = true;
-		}
-		this.buffer = new Array();
-	}
-}
-
-//TBD dupplicated
+/**
+ *  Resets all
+ */
 Buffer.prototype.reset = function(){
-  if(this.currentMode == BUFFER_MODE.REPLAY){
-			this.bufferDelay = defaultDelay;
-			this.currentMode = BUFFER_MODE.REPLAY;
-			this.startCurrentTime = null;
-			this.startedBuffering = false;
-			this.noData = false;
-		} else if(this.currentMode == BUFFER_MODE.REALTIME){
-			this.bufferDelay = 0;
-			this.currentMode = BUFFER_MODE.REALTIME;
-			this.startCurrentTime = new Date().getTime();
-			this.startedBuffering = true;
-			this.noData = true;
-		}
+    this.bufferDelay = 0;
+    this.startCurrentTime = new Date().getTime();
+    this.bufferState = STATE.NONE;
 		this.buffer = new Array();
-}
-
-Buffer.prototype.getMode = function(){
-	return this.currentMode;
 }

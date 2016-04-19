@@ -67,24 +67,26 @@ var properties = [
 		renderDivId :  "leafletViewerId",
 		defaultWidget : true
 	},
+  {
+		name : "2D Map OL",
+		url  : "viewers/OpenLayerV3/openlayerV3.html",
+		renderDivId :  "OpenLayerV3ViewerId",
+		defaultWidget : true
+	},
 	{
-		name : "3D Map",
-		url  : "viewers/Cesium/cesium.html",
-		renderDivId :  "cesiumViewerId",
+		name : "Console",
+		url  : "viewers/Console/console.html",
+		renderDivId :  "consoleViewerId",
 		defaultWidget : true
 	}
 ];
 
-//default options: synchronized: false, startTime = null, endTime = null, replayFactor = null
-
+//default options: bufferingTime = 0, replayFactor = 1
 var controller = OSH.Controller.getSingleton();
 
-//TODO:change into synchronized:true/false
-//setMode => setOptions
-controller.setMode(BUFFER_MODE.REPLAY, { 
-     startTime: new Date("2015-02-16T07:58:00Z"),
-     endTime: new Date("2015-02-16T08:09:00Z"),
-     replayFactor: 3
+controller.setOptions({
+     bufferingTime:10 * 1000, // 10 secs
+     replayFactor: 2
   });
 
 addWidgets(properties);	

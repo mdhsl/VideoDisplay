@@ -16,7 +16,7 @@ function init(){
 
   // setup the controller. The synchronizedTime is turn to off because the data are the same but at different time
   controller.setOptions({
-       bufferingTime:5*1000, // 5 seconds
+       bufferingTime:0*1000, // 5 seconds
        synchronizedTime: false // disable synchronization for this set of data
     });
 

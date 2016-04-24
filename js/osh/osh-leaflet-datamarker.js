@@ -22,19 +22,7 @@ OSH.LeafletDataMarker = function(map) {
         smoothFactor: 1
     }).addTo(this.map);
     
-    //create popup 
-    var videoDivId = "video-"+this.id;
-    
-    var div = document.createElement('div');
-    var videoElt = "<img id="+videoDivId+" class=\"popup-video\"></img>";
-    div.innerHTML = videoElt;
-    
-    this.marker.bindPopup(div, {
-      offset: new L.Point(0, -16),
-      autoPan:false
-    });
-      
-    this.imgTag = div.firstChild;
+    this.bindPopup();
 }
 
 OSH.LeafletDataMarker.prototype.onUpdateLocationData = function(data) {
@@ -72,8 +60,71 @@ OSH.LeafletDataMarker.prototype.onUpdateLocationData = function(data) {
 OSH.LeafletDataMarker.prototype.onUpdateOrientationData = function(data) {
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
-    var x = parseFloat(tokens[1]);
-    var y = parseFloat(tokens[2]);
+    var qw = parseFloat(tokens[1]);
+    var qx = parseFloat(tokens[2]);
+    var qy = parseFloat(tokens[3]);
+    var qz = parseFloat(tokens[4]);
+    
+    var qw2 = qw*qw;
+    var qx2 = qx*qx;
+    var qy2 = qy*qy;
+    var qz2 = qz*qz;
+    var test= qx*qy + qz*qw;
+    
+    var x,y,z;
+    
+    if (test > 0.499) {
+      y = 360/Math.PI*Math.atan2(qx,qw);
+      z = 90;
+      x = 0;
+    } else if (test < -0.499) {
+      y = -360/Math.PI*Math.atan2(qx,qw);
+      z = -90;
+      x = 0;
+    } else {
+      var h = Math.atan2(2*qy*qw-2*qx*qz,1-2*qy2-2*qz2);
+      var aa = Math.asin(2*qx*qy+2*qz*qw);
+      var bb = Math.atan2(2*qx*qw-2*qy*qz,1-2*qx2-2*qz2);
+      y = Math.round(h*180/Math.PI);
+      z = Math.round(aa*180/Math.PI);
+      x = Math.round(bb*180/Math.PI);
+    }
+    
+    this.marker.setRotationAngle(x);
+    
+};
+
+OSH.LeafletDataMarker.prototype.bindPopup = function() {
+  //create popup 
+  var videoDivId = "video-"+this.id;
+  
+  var div = document.createElement('div');
+  var videoElt = '<img id="'+videoDivId+'" class="popup-video" width="250px" height="200px"></img>';
+  div.innerHTML = videoElt;
+  
+  this.marker.bindPopup(div, {
+    offset: new L.Point(0, -16),
+    autoPan:false
+  });
+  
+  this.imgTag = div.firstChild;
+  
+  //unbind popup and open a new dialog providing the video content
+  $(this.imgTag).click(function() {
+    var closeFn = function(event,ui)  {
+      this.bindPopup();
+    }.bind(this);
+    
+    $("#"+videoDivId).dialog({
+        height:'auto', 
+        width:'auto',
+        close: closeFn,
+        dialogClass:"popup-video"  
+    });
+    
+    this.marker.closePopup();
+    this.marker.unbindPopup();
+  }.bind(this));
 };
 
 OSH.LeafletDataMarker.prototype.textTimeStampParser = function(data) {

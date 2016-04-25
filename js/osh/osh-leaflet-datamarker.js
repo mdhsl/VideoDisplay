@@ -78,32 +78,32 @@ OSH.LeafletDataMarker.prototype.onUpdateOrientationData = function(data) {
     var qy = parseFloat(tokens[3]);
     var qz = parseFloat(tokens[4]);
     
-    var qw2 = qw*qw;
-    var qx2 = qx*qx;
-    var qy2 = qy*qy;
-    var qz2 = qz*qz;
-    var test= qx*qy + qz*qw;
+    //from https://android.googlesource.com/platform/external/jmonkeyengine/+/master/engine/src/core/com/jme3/math/Quaternion.java
+    var angles = [3];
     
-    var x,y,z;
-    
-    if (test > 0.499) {
-      y = 360/Math.PI*Math.atan2(qx,qw);
-      z = 90;
-      x = 0;
-    } else if (test < -0.499) {
-      y = -360/Math.PI*Math.atan2(qx,qw);
-      z = -90;
-      x = 0;
+    var sqw = qw * qw;
+    var sqx = qx * qx;
+    var sqy = qy * qy;
+    var sqz = qz * qz;
+    var unit = sqx + sqy + sqz + sqw; // if normalized is one, otherwise
+    // is correction factor
+    var test = qx * qy + qz * qw;
+    if (test > 0.499 * unit) { // singularity at north pole
+        angles[1] = 2 * Math.atan2(qx, qw);
+        angles[2] = Math.PI/2;
+        angles[0] = 0;
+    } else if (test < -0.499 * unit) { // singularity at south pole
+        angles[1] = -2 * Math.atan2(qx, qw);
+        angles[2] = -Math.PI/2;
+        angles[0] = 0;
     } else {
-      var h = Math.atan2(2*qy*qw-2*qx*qz,1-2*qy2-2*qz2);
-      var aa = Math.asin(2*qx*qy+2*qz*qw);
-      var bb = Math.atan2(2*qx*qw-2*qy*qz,1-2*qx2-2*qz2);
-      y = Math.round(h*180/Math.PI);
-      z = Math.round(aa*180/Math.PI);
-      x = Math.round(bb*180/Math.PI);
+        angles[1] = Math.atan2(2 * qy * qw - 2 * qx * qz, sqx - sqy - sqz + sqw); // roll or heading 
+        angles[2] = Math.asin(2 * test / unit); // pitch or attitude
+        angles[0] = Math.atan2(2 * qx * qw - 2 * qy * qz, -sqx + sqy - sqz + sqw); // yaw or bank
     }
-    
-    this.marker.setRotationAngle(x);
+        
+    yaw = angles[0] * 180 / Math.PI;
+    this.marker.setRotationAngle(yaw);
     
 };
 

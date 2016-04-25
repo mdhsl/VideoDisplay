@@ -14,6 +14,7 @@ OSH.LeafletDataMarker = function(map) {
     }).addTo(this.map);
     
     this.id = this.marker._leaflet_id;
+    
     //create path
     this.path = new L.Polyline(this.pathCoordinates, {
         color: 'blue',
@@ -22,9 +23,13 @@ OSH.LeafletDataMarker = function(map) {
         smoothFactor: 1
     }).addTo(this.map);
     
+    // creates and binds a popup
     this.bindPopup();
 }
 
+/**
+ * Callback after receiving location values
+ */ 
 OSH.LeafletDataMarker.prototype.onUpdateLocationData = function(data) {
   var self = this;
   var rec = String.fromCharCode.apply(null, new Uint8Array(data));
@@ -47,8 +52,13 @@ OSH.LeafletDataMarker.prototype.onUpdateLocationData = function(data) {
      self.pathCoordinates.shift();
   }
 
+  // removes the layer
   self.map.removeLayer(self.path);
+  
+  // pushes new coordinates
   self.pathCoordinates.push(new L.LatLng(lat, lon));
+  
+  // adds the new layer
   var path = new L.Polyline(self.pathCoordinates, {
      color: 'blue',
      weight: 5,
@@ -57,6 +67,9 @@ OSH.LeafletDataMarker.prototype.onUpdateLocationData = function(data) {
   }).addTo(self.map);;
 }
 
+/**
+ * Callback after receiving orientation values
+ */ 
 OSH.LeafletDataMarker.prototype.onUpdateOrientationData = function(data) {
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
@@ -98,15 +111,19 @@ OSH.LeafletDataMarker.prototype.bindPopup = function() {
   //create popup 
   var videoDivId = "video-"+this.id;
   
+  // creates div element to encapsulate img tag
   var div = document.createElement('div');
+  // creates img tag
   var videoElt = '<img id="'+videoDivId+'" class="popup-video" width="250px" height="200px"></img>';
   div.innerHTML = videoElt;
   
+  // binds the popup
   this.marker.bindPopup(div, {
     offset: new L.Point(0, -16),
     autoPan:false
   });
-  
+
+  // saves the imgTag  
   this.imgTag = div.firstChild;
   
   //unbind popup and open a new dialog providing the video content
@@ -115,6 +132,7 @@ OSH.LeafletDataMarker.prototype.bindPopup = function() {
       this.bindPopup();
     }.bind(this);
     
+    // opens a dialog based on the popup div
     $("#"+videoDivId).dialog({
         height:'auto', 
         width:'auto',
@@ -122,16 +140,10 @@ OSH.LeafletDataMarker.prototype.bindPopup = function() {
         dialogClass:"popup-video"  
     });
     
+    // close the current popup
     this.marker.closePopup();
     this.marker.unbindPopup();
   }.bind(this));
-};
-
-OSH.LeafletDataMarker.prototype.textTimeStampParser = function(data) {
-  var rec = String.fromCharCode.apply(null, new Uint8Array(data));
-  var tokens = rec.trim().split(",");
-  var date = new Date(tokens[0]);
-  return date.getTime() - UTCAndroidShiftTime;
 };
 
 /**

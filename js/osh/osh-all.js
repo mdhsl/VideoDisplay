@@ -628,6 +628,36 @@ Buffer.prototype.reset = function(){
     this.bufferState = STATE.NONE;
 		this.buffer = new Array();
 }
+OSH.Utils = {
+	version: 'dev'
+};
+
+window.OSH.Utils = OSH.Utils;
+
+OSH.Utils = function() {}
+
+OSH.Utils.randomUUID = function() {
+   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+    return v.toString(16);
+  });
+}
+
+OSH.Utils.getStyleRuleValue = function (style, selector, sheet) {
+    var sheets = typeof sheet !== 'undefined' ? [sheet] : document.styleSheets;
+    for (var i = 0, l = sheets.length; i < l; i++) {
+        var sheet = sheets[i];
+        if( !sheet.cssRules ) { continue; }
+        for (var j = 0, k = sheet.cssRules.length; j < k; j++) {
+            var rule = sheet.cssRules[j];
+            if (rule.selectorText && rule.selectorText.split(',').indexOf(selector) !== -1) {
+                return rule.style[style];
+            }
+        }
+    }
+    return null;
+}
+
 var instanceController = null;
 
 OSH.Controller = function() {
@@ -680,7 +710,7 @@ OSH.Controller.prototype.setOptions = function(params) {
  * @param callback: the callback function by which the data is returned. It's the raw data from event.data of the WebSocket (including any timeStamp)
  */  
 OSH.Controller.prototype.addDataSource = function(object,url,name,timeStampParser,callback){
-  var uuid = getUUID();
+  var uuid = OSH.Utils.randomUUID();
   this.table.put(uuid,object);
   
   //creates Web Socket
@@ -711,14 +741,6 @@ OSH.Controller.prototype.addDataSource = function(object,url,name,timeStampParse
 OSH.Controller.prototype.addDataSourceObserver = function(observer) {
   this.buffer.addObserver(observer);
 };
-
-function getUUID(){
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-    return v.toString(16);
-  });
-}
-
 OSH.TimeStampParser = {
 	version: 'dev'
 };
@@ -861,12 +883,27 @@ OSH.Video = function(options) {
     var css = "";
     if(options.css) {
       css = options.css;
+      //find width to reset default value
+      //var width = OSH.Utils.getStyleRuleValue('width', '.'+css); // searches all sheets for the first .className rule and returns the set width style.
+      //var height = OSH.Utils.getStyleRuleValue('height', '.'+css); // searches all sheets for the first .className rule and returns the set height style.
+      //if(width != null) {
+      //  this.width = width;
+      //}
+      //if(height != null) {
+      //  this.height = height;
+      //}
+    }
+    
+    var id = OSH.Utils.randomUUID();
+    if(options.id) {
+      id = options.id;
     }
     
     var subParams = {
         width:this.width,
         height:this.height,
-        css: css
+        css: css,
+        id:id
     }
 
     if(this.format  == "mpeg") {
@@ -900,6 +937,9 @@ OSH.Video.Mp4 = function(div,options) {
     this.video.setAttribute("height", options.height);
     this.video.setAttribute("width", options.width);
     this.video.setAttribute("class", options.css);
+    if(options.id) {
+      this.video.setAttribute("id", options.id);
+    }
     // appends <video> tag to <div>
     div.appendChild(this.video);
     
@@ -950,6 +990,9 @@ OSH.Video.Mpeg = function(div,options) {
   this.imgTag.setAttribute("height", options.height);
   this.imgTag.setAttribute("width", options.width);
   this.imgTag.setAttribute("class", options.css);
+  if(options.id) {
+      this.imgTag.setAttribute("id", options.id);
+    }
   // appends <img> tag to <div>
   div.appendChild(this.imgTag);
 };

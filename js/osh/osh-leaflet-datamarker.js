@@ -3,6 +3,7 @@ var first = true;
 OSH.LeafletDataMarker = function(map) {
     this.map = map;
     this.pathCoordinates = [];
+    this.bindPopup = false;
     //create marker
     this.markerIcon = L.icon({
         iconAnchor: [16, 16],
@@ -24,14 +25,71 @@ OSH.LeafletDataMarker = function(map) {
     }).addTo(this.map);
     
     // creates and binds a popup
-   this.bindPopup();
+   //this.bindPopup();
+};
+
+OSH.LeafletDataMarker.prototype.isBindPopup = function() {
+  return this.bindPopup;
 };
 
 OSH.LeafletDataMarker.prototype.isPopupOpened = function() {
   return this.map.hasLayer(this.marker.getPopup())
 };
-OSH.LeafletDataMarker.prototype.bindPopup = function() {
-  var self = this;
+
+OSH.LeafletDataMarker.prototype.bindsPopup = function(divId,contentId) {
+  var div = document.createElement("div");
+  div.setAttribute("id", divId);
+  div.setAttribute("class","popup-content");
+  
+  //hack because the popup does not create the div yet
+  document.getElementById("hiddenContainer").appendChild(div);
+  
+  // binds the popup
+  this.marker.bindPopup(div, {
+    offset: new L.Point(0, -16),
+    autoPan:false
+  });
+  
+  $(div).click(function() {
+    var closeFn = function(event,ui)  {
+      $("#"+contentId).dialog('destroy'); 
+    };
+    // opens a dialog based on the popup div
+   dialog=  $("#"+contentId).dialog({
+        width:'auto',
+        maxWidth:'auto',
+        close: closeFn,
+        dialogClass:"popup-content",
+        title: contentId  
+    });
+    $(".ui-dialog-titlebar-close span").removeClass("ui-icon-closethick").addClass("ui-icon-popupCloseButton");
+    // close the current popup
+    this.marker.closePopup();
+  }.bind(this));
+  /*if(append) {
+    $("#"+contentId).appendTo("#"+divId);
+  }
+  //unbind popup and open a new dialog providing the video content
+  $(div).click(function() {
+      var closeFn = function(event,ui)  {
+        this.bindsPopup(divId,contentId,true);
+      }.bind(this);
+    
+      // opens a dialog based on the popup div
+      $("#"+contentId).dialog({
+          height:'auto', 
+          width:'auto',
+          close: closeFn,
+          dialogClass:"popup-content"  
+      });
+      
+      // close the current popup
+      this.marker.closePopup();
+      this.marker.unbindPopup();
+  }.bind(this));*/
+};
+
+/*OSH.LeafletDataMarker.prototype.bindPopup = function(div) {
   
   this.videoDivId = "video-"+this.id;
   //create popup 
@@ -69,8 +127,8 @@ OSH.LeafletDataMarker.prototype.bindPopup = function() {
     // close the current popup
     this.marker.closePopup();
     this.marker.unbindPopup();
-  }.bind(this));*/
-};
+  }.bind(this));
+};*/
 
 /**
  * Callback after receiving location values
@@ -208,33 +266,4 @@ OSH.LeafletDataMarker.prototype.onUpdateOrientationData = function(data) {
     yaw = angles[0] * 180 / Math.PI;
     this.marker.setRotationAngle(yaw);
     
-};
-
-
-/**
- * Get binary video data
- */ 
-OSH.LeafletDataMarker.prototype.onUpdateVideoData = function(data) {
-  if(this.isPopupOpened()) {
-    this.oshVideo.onDataCallback(data);
-  }
-};
-
-/**
- * Parse video binary timestamp
- */ 
-OSH.LeafletDataMarker.prototype.parseVideoTimeStamp = function(data) {
-  if(this.isPopupOpened()) {
-    if(!this.oshVideo) {
-      // creates video component
-      this.oshVideo = new OSH.Video({
-        width:"640px",
-        height:"480px",
-        css:"popup-video",
-        format:"mpeg", // switch between 'mp4' or 'mpeg'
-        div:this.videoDivId // the container to attach the video container
-      });
-    }
-    return this.oshVideo.parseTimeStamp(data);
-  }
 };

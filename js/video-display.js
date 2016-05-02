@@ -16,7 +16,7 @@ function init(){
 
   // setup the controller. The synchronizedTime is turn to off because the data are the same but at different time
   controller.setOptions({
-       bufferingTime:4*1000, // 5 seconds
+       bufferingTime:1*1000, // 5 seconds
        synchronizedTime: false, // disable synchronization for this set of data
        replayFactor:replayFactor
     });
@@ -90,7 +90,7 @@ function init(){
       for (var i = 0; i < data.length; i++) {
           //get data marker
           var dataMarker = new OSH.LeafletDataMarker(map);
-
+          
           // adds GPS stream for this data
           controller.addDataSource(this,
               data[i].GPS_URL,
@@ -107,12 +107,30 @@ function init(){
               dataMarker.onUpdateOrientationData.bind(dataMarker)
           );
           
+          //setup video
+          
+          // attach a video to dataMarker popup
+          // creates a videoId to get events from inner component
+          var videoContainerId = "video-"+i;
+          var videoTagDivId = "video-inner-"+i;
+          
+          dataMarker.bindsPopup(videoContainerId,videoTagDivId);
+              
+          var oshVideo = new OSH.Video({
+              id:videoTagDivId, // defines an id for the tag which will be created
+              width:"250px",
+              height:"200px",
+              css:"popup-video",
+              format:"mpeg", // switch between 'mp4' or 'mpeg'
+              div:videoContainerId // the container to attach the video container
+          });
+          
           // adds Video stream for this data
-          controller.addDataSource(this,
+          var uidVideo = controller.addDataSource(this,
               data[i].VIDEO_URL,
               "video"+i,
-              dataMarker.parseVideoTimeStamp.bind(dataMarker),
-              dataMarker.onUpdateVideoData.bind(dataMarker)
+              oshVideo.parseTimeStamp.bind(oshVideo),
+              oshVideo.onDataCallback.bind(oshVideo)
           );
       }
   }

@@ -21,7 +21,42 @@ body {
   z-index:9999;
 }
 
-.ui-dialog {
+.popup-content {
   z-index:9999;
 }
 
+.ui-dialog {
+  z-index:9999;
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.2);
+  font-family: arial,sans-serif;
+  font-size: 14px;
+}
+
+.ui-widget-header {
+  background:none;
+  border:none;
+}
+
+.ui-button-icon-only .ui-button-text, .ui-button-icons-only .ui-button-text {
+  display:none;
+}
+
+.ui-icon.ui-icon-popupCloseButton{
+  background: #fff url('../images/modal-close.png') no-repeat center center;
+  cursor: pointer;
+  display: block;
+  filter: alpha(opacity=60);
+  -moz-opacity: 0.6;
+  -webkit-opacity: 0.6;
+  -ms-filter: alpha(opacity=60);
+  opacity: 0.6;
+  float: right;
+  height: 20px;
+  width: 20px;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+  background:none;
+  border:none;
+  color:#fff;
+}

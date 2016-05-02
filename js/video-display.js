@@ -16,8 +16,9 @@ function init(){
 
   // setup the controller. The synchronizedTime is turn to off because the data are the same but at different time
   controller.setOptions({
-       bufferingTime:0*1000, // 5 seconds
-       synchronizedTime: false // disable synchronization for this set of data
+       bufferingTime:4*1000, // 5 seconds
+       synchronizedTime: false, // disable synchronization for this set of data
+       replayFactor:replayFactor
     });
 
   var data = [];
@@ -91,11 +92,28 @@ function init(){
           var dataMarker = new OSH.LeafletDataMarker(map);
 
           // adds GPS stream for this data
-          controller.addDataSource(this,data[i].GPS_URL,"text"+i,OSH.TimeStampParser.parseAndroidText,dataMarker.onUpdateLocationData.bind(dataMarker));
+          controller.addDataSource(this,
+              data[i].GPS_URL,
+              "text"+i,
+              OSH.TimeStampParser.parseAndroidText,
+              dataMarker.onUpdateLocationData.bind(dataMarker)
+          );
+          
           // adds Orienation stream for this data
-          controller.addDataSource(this,data[i].ORIENTATION_URL,"text"+i,OSH.TimeStampParser.parseAndroidText,dataMarker.onUpdateOrientationData.bind(dataMarker));
+          controller.addDataSource(this,
+              data[i].ORIENTATION_URL,
+              "text"+i,
+              OSH.TimeStampParser.parseAndroidText,
+              dataMarker.onUpdateOrientationData.bind(dataMarker)
+          );
+          
           // adds Video stream for this data
-          controller.addDataSource(this,data[i].VIDEO_URL,"video"+i,OSH.TimeStampParser.parseVideo,dataMarker.onUpdateVideoData.bind(dataMarker));
+          controller.addDataSource(this,
+              data[i].VIDEO_URL,
+              "video"+i,
+              dataMarker.parseVideoTimeStamp.bind(dataMarker),
+              dataMarker.onUpdateVideoData.bind(dataMarker)
+          );
       }
   }
 

@@ -23,9 +23,6 @@ OSH.LeafletDataMarker = function(map) {
         opacity: 0.5,
         smoothFactor: 1
     }).addTo(this.map);
-    
-    // creates and binds a popup
-   //this.bindPopup();
 };
 
 OSH.LeafletDataMarker.prototype.isBindPopup = function() {

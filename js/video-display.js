@@ -121,7 +121,7 @@ function init(){
               width:"250px",
               height:"200px",
               css:"popup-video",
-              format:"mpeg", // switch between 'mp4' or 'mpeg'
+              format:"mjpeg", // switch between 'mp4' or 'mjpeg'
               div:videoContainerId // the container to attach the video container
           });
           

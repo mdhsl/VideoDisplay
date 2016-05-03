@@ -43,92 +43,36 @@ OSH.LeafletDataMarker.prototype.bindsPopup = function(divId,contentId) {
   
   //hack because the popup does not create the div yet
   document.getElementById("hiddenContainer").appendChild(div);
-  
-  // binds the popup
-  this.marker.bindPopup(div, {
-    offset: new L.Point(0, -16),
-    autoPan:false
-  });
-  
-  $(div).click(function() {
-    var closeFn = function(event,ui)  {
-      $("#"+contentId).dialog('destroy'); 
-    };
-    // opens a dialog based on the popup div
-   dialog=  $("#"+contentId).dialog({
-        width:'auto',
-        maxWidth:'auto',
-        close: closeFn,
-        dialogClass:"popup-content",
-        title: contentId  
-    });
-    $(".ui-dialog-titlebar-close span").removeClass("ui-icon-closethick").addClass("ui-icon-popupCloseButton");
-    // close the current popup
-    this.marker.closePopup();
-  }.bind(this));
-  /*if(append) {
-    $("#"+contentId).appendTo("#"+divId);
-  }
-  //unbind popup and open a new dialog providing the video content
-  $(div).click(function() {
-      var closeFn = function(event,ui)  {
-        this.bindsPopup(divId,contentId,true);
-      }.bind(this);
-    
-      // opens a dialog based on the popup div
-      $("#"+contentId).dialog({
-          height:'auto', 
-          width:'auto',
-          close: closeFn,
-          dialogClass:"popup-content"  
-      });
-      
-      // close the current popup
-      this.marker.closePopup();
-      this.marker.unbindPopup();
-  }.bind(this));*/
+
+  this.addBind(div,contentId);
 };
 
-/*OSH.LeafletDataMarker.prototype.bindPopup = function(div) {
-  
-  this.videoDivId = "video-"+this.id;
-  //create popup 
-  // creates div element to encapsulate img tag
-  var div = document.createElement('div');
-  div.setAttribute("id", this.videoDivId );
-  div.setAttribute("class","popup-video");
-  // creates img tag
-  //var videoElt = '<img id="'+this.videoDivId+'" class="popup-video" width="250px" height="200px"></img>';
-  //div.innerHTML = videoElt;
-  
+OSH.LeafletDataMarker.prototype.addBind = function(div,contentId){
   // binds the popup
   this.marker.bindPopup(div, {
     offset: new L.Point(0, -16),
     autoPan:false
   });
-
-  // saves the imgTag  
-  /*this.imgTag = div.firstChild;
   
-  //unbind popup and open a new dialog providing the video content
-  $(this.imgTag).click(function() {
-    var closeFn = function(event,ui)  {
-      this.bindPopup();
-    }.bind(this);
-    
-    // opens a dialog based on the popup div
-    $("#"+this.videoDivId).dialog({
-        height:'auto', 
-        width:'auto',
-        close: closeFn,
-        dialogClass:"popup-video"  
-    });
-    
+  div.onclick = function() {
+    if(!this.dialog) {
+      var contentDiv = document.getElementById(contentId);  
+      this.dialog = new OSH.UI.Dialog({
+          title: contentId
+      });
+      this.dialog.appendContent(div);
+      this.dialog.setContentSize(contentDiv.width+"px",contentDiv.height+"px");
+      this.dialog.onClose(function() {
+          // binds the popup again
+          this.dialog = null;
+          this.addBind(div,contentId);
+      }.bind(this));
+    }
     // close the current popup
     this.marker.closePopup();
-    this.marker.unbindPopup();
-  }.bind(this));
-};*/
+    this.marker.unbindPopup();    
+  }.bind(this);
+};
 
 /**
  * Callback after receiving location values

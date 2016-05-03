@@ -25,38 +25,29 @@ body {
   z-index:9999;
 }
 
-.ui-dialog {
+.leaflet-popup-content-wrapper {
+  background-color: rgba(5, 107, 166, 0.6);
+  min-height:100px;
+  min-width:100px;
+  border-radius:6px;
+  top:50px;
+  left:50%;
+  margin-left:-210px;
+  box-shadow:0 0 7px #000000;
   z-index:9999;
-  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.2);
-  font-family: arial,sans-serif;
-  font-size: 14px;
 }
 
-.ui-widget-header {
-  background:none;
-  border:none;
+.leaflet-popup-content {
+  margin:19px 3px 3px 3px;
 }
 
-.ui-button-icon-only .ui-button-text, .ui-button-icons-only .ui-button-text {
-  display:none;
+.leaflet-popup-content-wrapper .leaflet-popup-content {
 }
 
-.ui-icon.ui-icon-popupCloseButton{
-  background: #fff url('../images/modal-close.png') no-repeat center center;
-  cursor: pointer;
-  display: block;
-  filter: alpha(opacity=60);
-  -moz-opacity: 0.6;
-  -webkit-opacity: 0.6;
-  -ms-filter: alpha(opacity=60);
-  opacity: 0.6;
-  float: right;
-  height: 20px;
-  width: 20px;
+.leaflet-popup-tip-container {
 }
 
-.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
-  background:none;
-  border:none;
-  color:#fff;
+
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+  
 }

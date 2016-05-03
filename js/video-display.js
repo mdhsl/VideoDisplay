@@ -92,7 +92,7 @@ function init(){
           var dataMarker = new OSH.LeafletDataMarker(map);
           
           // adds GPS stream for this data
-          controller.addDataSource(this,
+          controller.addDataSource(
               data[i].GPS_URL,
               "text"+i,
               OSH.TimeStampParser.parseAndroidText,
@@ -100,7 +100,7 @@ function init(){
           );
           
           // adds Orienation stream for this data
-          controller.addDataSource(this,
+          controller.addDataSource(
               data[i].ORIENTATION_URL,
               "text"+i,
               OSH.TimeStampParser.parseAndroidText,
@@ -126,7 +126,7 @@ function init(){
           });
           
           // adds Video stream for this data
-          var uidVideo = controller.addDataSource(this,
+          var uidVideo = controller.addDataSource(
               data[i].VIDEO_URL,
               "video"+i,
               oshVideo.parseTimeStamp.bind(oshVideo),

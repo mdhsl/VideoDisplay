@@ -6,45 +6,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>Video display</title>
 
-<!-- NEEDED for openlayer viewer; Google lib tries to write inside the head/body and it is not allowed. Need to be 
-loaded here -->
 <link href="css/stylesheet.min.css" rel="stylesheet">
+<!---------------- OSH ------------------>
+<script type="text/javascript" src="js/osh/osh-all.min.js"></script>
 
-
-<!-------------- LEAFLET ---------------->
-
-<!-- LEAFLET libs -->
+<!-------------- OSH PLUGINS ----------------->
+<link rel="stylesheet" type="text/css" href="http://cesiumjs.org/releases/1.18/Build/Cesium/Widgets/widgets.css" />
+<script src="http://cesiumjs.org/releases/1.18/Build/Cesium/Cesium.js"></script>
 <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />	
 <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
-<!-- Extended rotated marker to orient Marker onto the Map -->
-<script src="js/common/leaflet.rotatedMarker.js"></script>
-<!-- custom CSS for leaflet -->
-<link href="css/leaflet-extends.css" rel="stylesheet">
-<!-- FullScreen -->
 <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
 <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
 
-<!---------------- OSH ------------------>
-<link rel="stylesheet" href="css/osh-all.css" />
-<script type="text/javascript" src="js/osh/osh-all.min.js"></script>
+<script type="text/javascript" src= "js/osh/plugins/leaflet/osh-UI-LeafletView.js"></script>
+<script type="text/javascript" src= "js/osh/plugins/cesium/osh-UI-CesiumView.js"></script>
 
-<script type="text/javascript" src="js/osh/osh-leaflet-datamarker.js"></script>
+<script type="text/javascript" src= "js/osh-ui-MultiComponentView.js"></script>
 
 <!------------ VIDEO DISPLAY ------------>
+<link href='css/video-display.css' rel='stylesheet' />
 <script type="text/javascript" src="js/video-display.js"></script>
+
 </head>
 
 <body onload="init()">
-    <nav class="navbar navbar-default navbar-inverse navbar-fixed-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="http://www.opensensorhub.org/">
-          	<img src="https://github.com/sensiasoft/sensorhub/wiki/images/sensorhub_logo_128.png" style="-webkit-animation-play-state: paused; -webkit-transition: none; transition: none; width:50px;height:50px;">
-          OpenSensorHub</a>
+      <nav class="navbar navbar-default navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="http://www.opensensorhub.org/">
+              <img src="https://github.com/sensiasoft/sensorhub/wiki/images/sensorhub_logo_128.png" style="-webkit-animation-play-state: paused; -webkit-transition: none; transition: none; width:50px;height:50px;">
+            OpenSensorHub</a>
+          </div>
         </div>
-      </div>
-    </nav>
-  <div id="leafletMap" style="height:100%;width:100%"></div>
-  <div id="hiddenContainer" style="display:none"></div>
+      </nav>
+        <div class="row">
+          <div class="col-xs-6 box top-left "><div id="top-left" class="box-content"></div></div>
+          <div class="col-xs-6 box top-right"><div id="top-right" class="box-content"></div></div>
+        </div>
+        <div class="row">
+          <div  class="col-xs-6 box box-bottom bottom-left"><div id="bottom-left" class="box-content"></div>
+          <div  class="col-xs-6 box box-bottom bottom-right"><div id="bottom-right" class="box-content"></div>
+        </div>
 </body>
 </html>

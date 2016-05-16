@@ -1,0 +1,89 @@
+/** APP **/
+.box {
+  height:50%;
+  width: 50%;
+  margin: 0; 
+  padding: 0;
+}
+
+html, body {
+  overflow:hidden;
+}
+
+.box-bottom {
+   border-bottom: none !important;
+}
+
+.box:first-child {
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+}
+.box:nth-child(2) {
+    border-bottom: 1px solid black;
+}
+.box:nth-child(3) {
+    border-right: 1px solid black;
+}
+
+.box-content {
+  height:100%;
+  width: 100%;
+  margin: 0; 
+  padding: 0;
+}
+
+.top-left {
+  padding-bottom:5px;
+  padding-right:5px;
+}
+
+.bottom-left {
+  padding-top:5px;
+  padding-right:5px;
+}
+
+.top-right {
+  padding-bottom:5px;
+  padding-left:5px;
+}
+
+.bottom-right {
+  padding-top:5px;
+}
+
+/** LEAFLET **/
+.leaflet-overlay-pane path,
+.leaflet-marker-icon {
+  cursor: pointer;
+}
+
+.leaflet-left {
+    left: 10;
+}
+
+/** CESIUM **/
+.cesium-viewer-animationContainer {
+    left: 20;
+}
+
+/** MultiComponentView **/
+.grid {
+  width: 100%;
+  height: 100%;
+}
+
+.grid-cell {
+  width: 33%;
+  height: 50%;
+  outline: 1px solid;
+  float: left;
+}
+
+/** Video css **/
+.video {
+  width:100%;
+  margin:0;
+  padding:0;
+  height:100%;
+}
+

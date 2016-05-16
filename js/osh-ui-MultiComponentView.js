@@ -25,7 +25,7 @@ OSH.UI.MultiComponentView = Class.create(OSH.UI.View,{
       for(var i=0;i< this.views.length;i++) {
         var div = this.viewsDiv.get(this.views[i].getDivId());
         if(this.views[i].hasDataView(id)){
-          div.style.border = "5px dotted red";
+          div.style.border = "3px dashed green";
         } else {
           div.style.border = "none";
         }

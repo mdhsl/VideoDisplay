@@ -73,9 +73,12 @@ function init(){
            css:"video"
       });
           
-       // associates video stream to video view
+      // associates video stream to video view
       oshVideoView.setDataViewId(videoDataSource.getId());
      
+      //set associated dataViews
+      oshVideoView.addAssociatedDataViews([latLonAltDataSource.getId()]);
+          
       oshMultiView.addView(oshVideoView);
       // adds marker to map
       oshMapView.addDataMarker({

@@ -41,7 +41,7 @@ function init(){
 
   function initStream() {
     var dataSourceProvider = new OSH.DataSource.DataSourceProvider({
-        bufferingTime:5*1000, // 5 seconds
+        bufferingTime:0*1000, // 5 seconds
         synchronizedTime: false // does not sync the data
     });
      
@@ -57,45 +57,58 @@ function init(){
     
     //setup multiView to encapsulate the video divs
     var oshMultiView = new OSH.UI.MultiComponentView("top-right");
+    
+    var selectedVideoView = new OSH.UI.SelectedVideoView("bottom-right");
           
     // adds views to controller
     controller.addView(oshMapView);
     controller.addView(oshCesiumView);
     controller.addView(oshMultiView);
+    controller.addView(selectedVideoView);
     
     // iterates over data to create marker + video popups                
     for (var i = 0; i < data.length; i++) {
       //creates data sources
       var latLonAltDataSource = new OSH.DataSource.LatLonAltDataSource("latLon-"+i,data[i].GPS_URL);
+      var orientationDataSource = new OSH.DataSource.OrientationQuaternionDataSource("orientation-"+i,data[i].ORIENTATION_URL);
       var videoDataSource = new OSH.DataSource.VideoMjpegDataSource("video-"+i,data[i].VIDEO_URL);
       
       var oshVideoView = new OSH.UI.MJpegView("container-video-"+i,{
            css:"video"
       });
-          
+      
       // associates video stream to video view
       oshVideoView.setDataViewId(videoDataSource.getId());
      
       //set associated dataViews
-      oshVideoView.addAssociatedDataViews([latLonAltDataSource.getId()]);
-          
+      
+      var dataViewGroup = [latLonAltDataSource.getId(),orientationDataSource.getId(),videoDataSource.getId()];
+      
+      oshVideoView.addAssociatedDataViews(dataViewGroup);
+      selectedVideoView.addDataView(videoDataSource.getId(),dataViewGroup);
+      
       oshMultiView.addView(oshVideoView);
       // adds marker to map
       oshMapView.addDataMarker({
         // associates GPS data to marker
         latLonDataViewId:latLonAltDataSource.getId(),
-        displayPath: true
+        orientationDataViewId:orientationDataSource.getId(),
+        displayPath: true,
+        associatedDataViews: dataViewGroup
       });
       
       //set dataView
       //add marker to map
       oshCesiumView.addDataMarker({
         latLonDataViewId:latLonAltDataSource.getId(),
+        orientationDataViewId:orientationDataSource.getId(),
+        associatedDataViews: dataViewGroup
       });
       
       // adds data sources to provider
       dataSourceProvider.addDataSource(latLonAltDataSource);
-      dataSourceProvider.addDataSource(videoDataSource); 
+      dataSourceProvider.addDataSource(orientationDataSource);
+      dataSourceProvider.addDataSource(videoDataSource);  
     }
 
     // starts streaming

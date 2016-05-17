@@ -6,7 +6,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>Video display</title>
 
-<link href="css/stylesheet.min.css" rel="stylesheet">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
 <!---------------- OSH ------------------>
 <script type="text/javascript" src="js/osh/osh-all.min.js"></script>
 
@@ -22,6 +25,7 @@
 <script type="text/javascript" src= "js/osh/plugins/cesium/osh-UI-CesiumView.js"></script>
 
 <script type="text/javascript" src= "js/osh-ui-MultiComponentView.js"></script>
+<script type="text/javascript" src= "js/osh-ui-SelectedVideoView.js"></script>
 
 <!------------ VIDEO DISPLAY ------------>
 <link href='css/video-display.css' rel='stylesheet' />
@@ -39,13 +43,28 @@
           </div>
         </div>
       </nav>
-        <div class="row">
-          <div class="col-xs-6 box top-left "><div id="top-left" class="box-content"></div></div>
-          <div class="col-xs-6 box top-right"><div id="top-right" class="box-content"></div></div>
-        </div>
-        <div class="row">
-          <div  class="col-xs-6 box box-bottom bottom-left"><div id="bottom-left" class="box-content"></div>
-          <div  class="col-xs-6 box box-bottom bottom-right"><div id="bottom-right" class="box-content"></div>
-        </div>
+      <div class="sidebar collapse mobile-menu" id="bs-side" >
+        <ul class="nav navbar-nav navbar-right">
+          <li><label><input type="checkbox" id="layer-1"/></label></li>
+          <li class="divider"></li>
+       </ul>
+    </div>
+          
+    <ul class="nav nav-pills">
+      <li role="presentation" class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><label><input type="checkbox" id="layer-1"/></label></li>
+        </ul>
+      </li>
+    </ul>
+    <div class="row">
+      <div class="col-xs-6 box top-left "><div id="top-left" class="box-content"></div></div>
+      <div class="col-xs-6 box top-right"><div id="top-right" class="box-content"></div></div>
+    </div>
+    <div class="row">
+      <div  class="col-xs-6 box box-bottom bottom-left"><div id="bottom-left" class="box-content"></div></div>
+      <div  class="col-xs-6 box box-bottom bottom-right"><div id="bottom-right" class="box-content"></div></div>
+    </div>
 </body>
 </html>

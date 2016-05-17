@@ -21,13 +21,14 @@ OSH.UI.MultiComponentView = Class.create(OSH.UI.View,{
        this.viewsDiv.put(oshView.getDivId(),div);
     },
     
-    selectDataView: function($super,id) {
+    selectDataView: function($super,idArr) {
       for(var i=0;i< this.views.length;i++) {
         var div = this.viewsDiv.get(this.views[i].getDivId());
-        if(this.views[i].hasDataView(id)){
-          div.style.border = "3px dashed green";
-        } else {
-          div.style.border = "none";
+        div.classList.remove('grid-selected');
+        for(var j=0; j < idArr.length; j++) {
+          if(this.views[i].hasDataView(idArr[j])){
+            div.classList.add('grid-selected');
+          }
         }
       }
     },

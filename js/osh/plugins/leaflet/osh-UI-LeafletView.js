@@ -194,7 +194,7 @@ OSH.UI.LeafletMarkerView = Class.create(OSH.UI.View,{
     //create marker
     this.markerIcon = L.icon({
         iconAnchor: [16, 16],
-        iconUrl: 'images/arrow-direction.svg'
+        iconUrl: './images/cameralook.png'
     });
 
     this.marker = L.marker([0, 0], {
@@ -213,13 +213,17 @@ OSH.UI.LeafletMarkerView = Class.create(OSH.UI.View,{
   },
   
   onClick: function() {
+    var memo = [];
+    
     if(this.latLonDataViewId && this.latLonDataViewId != null) {
-      $(this.divId).fire("osh:dataView",this.latLonDataViewId);
+        memo.push(this.latLonDataViewId);
     }
     
     if(this.orientationDataViewId && this.orientationDataViewId != null) {
-      $(this.divId).fire("osh:dataView",this.orientationDataViewId);
+       memo.push(this.orientationDataViewId);
     }
+    
+     $(this.divId).fire("osh:dataView",memo);
   },
   update: function($super,dataViewId, data) {
     if(this.orientationDataViewId == dataViewId) {

@@ -45,11 +45,8 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View,{
     // gps position
     var entity = this.viewer.entities.add({
         position: Cesium.Cartesian3.fromDegrees(0, 0, 0),
-        point: {
-            color: Cesium.Color.SKYBLUE, // default: WHITE
-            pixelSize: 10, // default: 1
-            outlineColor: Cesium.Color.YELLOW, // default: BLACK
-            outlineWidth: 3 // default: 0
+        billboard : {
+            image : 'images/cameralook.png'
         }
     });
     
@@ -111,7 +108,7 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View,{
 
     dataMarker.entity.position = Cesium.Cartesian3.fromDegrees(lon, lat, altitude);
 
-    if (this.first  ) {
+    if (this.first && this.viewer.trackedEntity != 'undefined') {
         this.viewer.zoomTo(this.viewer.entities, this.camPos);
         this.first = false;
     }

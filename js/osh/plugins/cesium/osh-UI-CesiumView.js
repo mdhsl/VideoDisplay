@@ -24,7 +24,7 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View,{
     var east = Cesium.Math.toRadians(0);
     var north = Cesium.Math.toRadians(0);
     var rect = new Cesium.Rectangle(west, south, east, north);
-    this.camPos = new Cesium.HeadingPitchRange(Cesium.Math.toRadians(-10), Cesium.Math.toRadians(-30), 800.0);
+    this.camPos = new Cesium.HeadingPitchRange(Cesium.Math.toRadians(-10), Cesium.Math.toRadians(-30), 5000.0);
 
     var targetEntities = [];
 
@@ -46,7 +46,9 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View,{
     var entity = this.viewer.entities.add({
         position: Cesium.Cartesian3.fromDegrees(0, 0, 0),
         billboard : {
-            image : 'images/cameralook.png'
+            image : 'images/cameralook.png',
+            rotation: Cesium.Math.toRadians(-90),
+            horizontalOrigin: Cesium.HorizontalOrigin.CENTER
         }
     });
     

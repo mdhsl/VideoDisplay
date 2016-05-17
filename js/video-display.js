@@ -41,7 +41,7 @@ function init(){
 
   function initStream() {
     var dataSourceProvider = new OSH.DataSource.DataSourceProvider({
-        bufferingTime:0*1000, // 5 seconds
+        bufferingTime:3*1000, // 5 seconds
         synchronizedTime: false // does not sync the data
     });
      
@@ -115,9 +115,29 @@ function init(){
     dataSourceProvider.connectAll();
   
   }
+  
   // init the data
   initData();
 
   // init the controller and Websocket connections
   initStream();
 }
+
+function changeView(id) {
+    var input = document.getElementById(id);
+    var action = (input.checked)? 'block' : 'none'; 
+    var divMapped;
+    
+    if(id == "2d") {
+      //top-left
+      divMapped = "top-left";
+    } else if(id == "3d") {
+      divMapped = "bottom-left";
+    } else if(id == "multi-video") {
+      divMapped = "top-right";
+    }else if(id == "full-video") {
+      divMapped = "bottom-right";
+    }
+    
+    document.getElementById(divMapped).parentElement.style.display = action;
+};

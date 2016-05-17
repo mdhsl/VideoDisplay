@@ -1,3 +1,6 @@
+var leafletMarkerNormalIcon = './images/cameralook.png';
+var leafletMarkerSelectedIcon = './images/cameralook-selected.png';
+
 OSH.UI.LeafletView = Class.create(OSH.UI.View,{
   initialize: function($super,divId,options) {
       $super(divId);
@@ -34,6 +37,9 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View,{
       dataMarker.setLatLonDataViewId(params.latLonDataViewId);
     }
     
+    if(params.associatedDataViews) {
+      dataMarker.addAssociatedDataViews(params.associatedDataViews);
+    }
     this.dataMarkers.push(dataMarker);
     
     dataMarker.getMarker().addTo(this.map);
@@ -120,6 +126,12 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View,{
     for(var i=0;i < this.dataMarkers.length;i++) {
       this.dataMarkers[i].update(dataViewId,data);
     }
+  },
+  
+  selectDataView: function($super,idArr) {
+    for(var i=0;i < this.dataMarkers.length;i++) {
+      this.dataMarkers[i].selectDataView(idArr);
+    }
   }
 });
 
@@ -194,9 +206,14 @@ OSH.UI.LeafletMarkerView = Class.create(OSH.UI.View,{
     //create marker
     this.markerIcon = L.icon({
         iconAnchor: [16, 16],
-        iconUrl: './images/cameralook.png'
+        iconUrl: leafletMarkerNormalIcon
     });
 
+    this.markerSelectedIcon = L.icon({
+        iconAnchor: [16, 16],
+        iconUrl: leafletMarkerSelectedIcon
+    });
+    
     this.marker = L.marker([0, 0], {
         icon: this.markerIcon
     });
@@ -251,6 +268,16 @@ OSH.UI.LeafletMarkerView = Class.create(OSH.UI.View,{
   
   getMarker: function() {
     return this.marker;
+  },
+  
+  selectDataView: function($super,idArr) {
+    this.marker.setIcon(this.markerIcon);
+    for(var j=0; j < idArr.length; j++) {
+      if(this.hasDataView(idArr[j])) {
+        this.marker.setIcon(this.markerSelectedIcon);
+        break;
+      }
+    }
   },
   
   onChangePosition:function(lat,lon) {},

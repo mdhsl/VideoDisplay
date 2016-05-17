@@ -6,7 +6,6 @@ OSH.UI.SelectedVideoView = Class.create(OSH.UI.View,{
     });
     
     var div = document.getElementById(this.divId);
-    div.setAttribute("id","test");
     div.appendChild(document.getElementById(this.view.getDivId()));
     this.viewIds = new Hashtable();
   },

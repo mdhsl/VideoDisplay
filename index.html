@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>Video display</title>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 
@@ -30,41 +30,37 @@
 <!------------ VIDEO DISPLAY ------------>
 <link href='css/video-display.css' rel='stylesheet' />
 <script type="text/javascript" src="js/video-display.js"></script>
+<script type="text/javascript" src="js/patch-prototype-bootstrap.js"></script>
 
 </head>
 
 <body onload="init()">
-      <nav class="navbar navbar-default navbar-inverse navbar-fixed-top">
-        <div class="container-fluid">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="http://www.opensensorhub.org/">
-              <img src="https://github.com/sensiasoft/sensorhub/wiki/images/sensorhub_logo_128.png" style="-webkit-animation-play-state: paused; -webkit-transition: none; transition: none; width:50px;height:50px;">
-            OpenSensorHub</a>
-          </div>
-        </div>
-      </nav>
-      <div class="sidebar collapse mobile-menu" id="bs-side" >
-        <ul class="nav navbar-nav navbar-right">
-          <li><label><input type="checkbox" id="layer-1"/></label></li>
-          <li class="divider"></li>
-       </ul>
+  <nav class="navbar navbar-default navbar-inverse ">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="http://www.opensensorhub.org/">
+          <img src="https://github.com/sensiasoft/sensorhub/wiki/images/sensorhub_logo_128.png" style="-webkit-animation-play-state: paused; -webkit-transition: none; transition: none; width:50px;height:50px;">
+        OpenSensorHub</a>
+      </div>
     </div>
-          
-    <ul class="nav nav-pills">
-      <li role="presentation" class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li><label><input type="checkbox" id="layer-1"/></label></li>
-        </ul>
-      </li>
+  </nav>
+  <div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Views
+    <span class="caret"></span></button>
+    <ul class="dropdown-menu">
+       <li><label class="checkbox"><input type="checkbox" checked id="2d" onclick="changeView(this.id)">2D</label></li>
+       <li><label class="checkbox"><input type="checkbox" checked id="3d" onclick="changeView(this.id)">3D</label></li>
+       <li><label class="checkbox"><input type="checkbox" checked id="multi-video" onclick="changeView(this.id)">Multi Video</label></li>
+       <li><label class="checkbox"><input type="checkbox" checked id="full-video" onclick="changeView(this.id)">Full Video</label></li>
     </ul>
-    <div class="row">
-      <div class="col-xs-6 box top-left "><div id="top-left" class="box-content"></div></div>
-      <div class="col-xs-6 box top-right"><div id="top-right" class="box-content"></div></div>
-    </div>
-    <div class="row">
-      <div  class="col-xs-6 box box-bottom bottom-left"><div id="bottom-left" class="box-content"></div></div>
-      <div  class="col-xs-6 box box-bottom bottom-right"><div id="bottom-right" class="box-content"></div></div>
-    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-6 box top-left "><div id="top-left" class="box-content"></div></div>
+    <div class="col-xs-6 box top-right"><div id="top-right" class="box-content"></div></div>
+  </div>
+  <div class="row">
+    <div  class="col-xs-6 box box-bottom bottom-left"><div id="bottom-left" class="box-content"></div></div>
+    <div  class="col-xs-6 box box-bottom bottom-right"><div id="bottom-right" class="box-content"></div></div>
+  </div>
 </body>
 </html>

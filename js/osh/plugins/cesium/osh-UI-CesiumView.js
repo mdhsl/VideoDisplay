@@ -39,6 +39,38 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View,{
     //viewer.scene.globe.depthTestAgainstTerrain = true;
     
     this.dataMarkers = [];
+    
+    this.selectedDataMarker = null;
+    Cesium.knockout.getObservable(this.viewer, '_selectedEntity').subscribe(function(entity) {
+        if(this.selectedDataMarker != null) 
+        {
+          this.selectedDataMarker.entity.billboard.image = 'images/cameralook.png';
+        }
+        //change icon
+        if (Cesium.defined(entity)) {
+            var dataMarker = null;
+            for(var i = 0; i < this.dataMarkers.length;i++) {
+              if(this.dataMarkers[i].entity.id == entity.id) {
+                dataMarker = this.dataMarkers[i];
+                break;
+              } 
+            }
+            var memo = [];
+    
+            if(dataMarker.latLonDataViewId && dataMarker.latLonDataViewId != null) {
+                memo.push(dataMarker.latLonDataViewId);
+            }
+            
+            if(dataMarker.orientationDataViewId && dataMarker.orientationDataViewId != null) {
+               memo.push(dataMarker.orientationDataViewId);
+            }
+            
+            //change icon
+            dataMarker.entity.billboard.image = 'images/cameralook-selected.png';
+            this.selectedDataMarker = dataMarker;
+            $(this.divId).fire("osh:dataView",memo);
+        }
+    }.bind(this));
   },
   
   addDataMarker: function(params) {
@@ -118,5 +150,17 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View,{
   
   updateDataMarkerOrientation: function(dataMarker, data) {
     //TODO
+  },
+  
+  selectDataView: function($super,idArr) {
+    for(var i=0;i < this.dataMarkers.length; i++) {
+      var dataMarker = this.dataMarkers[i];
+      if(idArr.indexOf(dataMarker.orientationDataViewId) >=0 ){
+        //select entity
+        this.viewer.selectedEntity =  dataMarker.entity;                                      
+        //this.viewer.trackedEntity =  dataMarker.entity;
+        break;
+      } 
+    }
   }
 });

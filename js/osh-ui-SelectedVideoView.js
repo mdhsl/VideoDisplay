@@ -1,16 +1,22 @@
 OSH.UI.SelectedVideoView = Class.create(OSH.UI.View,{
   initialize: function($super,divId,options) {
     $super(divId);
-    if(options.format && options.format == "mp4") {
-       this.view = new OSH.UI.Mp4View("full-container-video",{
-          css:"video",
-          codecs : options.codecs
-      });
-    } else {
-      this.view = new OSH.UI.MJpegView("full-container-video",{
-          css:"video"
-      });
+    var codecs = "";
+    var format = "mjpeg";
+    
+    if(typeof(options.codecs) != "undefined") {
+      codecs = options.codecs;
+    }    
+    
+    if(typeof(options.format) != "undefined") {
+      format = options.format;
     }
+    
+    this.view = new OSH.UI.VideoView("full-container-video",{
+        type : options.format,
+        css:"video",
+        codecs : options.codecs
+    });
     
     var div = document.getElementById(this.divId);
     div.appendChild(document.getElementById(this.view.getDivId()));

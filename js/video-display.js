@@ -16,7 +16,7 @@ function init(){
   //setup multiView to encapsulate the video divs
   var oshMultiView = new OSH.UI.MultiComponentView("top-right");
   var selectedVideoView = new OSH.UI.SelectedVideoView("bottom-right",{
-      format : "mjpeg" // 'mjpeg' or 'mp4'
+      format : "mjpeg" // 'mjpeg' or 'mp4' or 'h264'
       //codecs: "..." // mandatory for 'mp4' format
   });
   
@@ -41,7 +41,9 @@ function init(){
         options["androidShift"] = data.androidShift;
       }  
       //check type
-      if(data.property == "http://sensorml.com/ont/swe/property/Location") {
+      if(data.property == "http://sensorml.com/ont/swe/property/Location" || 
+        data.property == "http://www.opengis.net/def/property/OGC/0/SensorLocation") {
+        
         latLonAltDataSource = new OSH.DataSource.LatLonAltDataSource(data.name,data.url,options);
         dataSourceProvider.addDataSource(latLonAltDataSource);
         dataViewGroup.push(latLonAltDataSource.getId());
@@ -54,26 +56,25 @@ function init(){
       } else if(data.property == "http://sensorml.com/ont/swe/property/VideoFrame") {
         var oshVideoView;
         
-        if(data.format != null && data.format == 'video/mp4') {
-          videoDataSource = new OSH.DataSource.VideoMp4DataSource(data.name,data.url,options);
-          var codecs = "avc1.42401F";
-          if(data.codecs && data.codecs != null) {
-            codecs = data.codecs;
-          }
-          oshVideoView = new OSH.UI.Mp4View("container-video-"+OSH.Utils.randomUUID(),{
-            css:"video",
-            codecs:codecs
-          });
-        } else {
-          videoDataSource = new OSH.DataSource.VideoMjpegDataSource(data.name,data.url,options);
-          oshVideoView = new OSH.UI.MJpegView("container-video-"+OSH.Utils.randomUUID(),{
-           css:"video"
-          });
-        }
-          
+        var format = "mjpeg";
+        if(data.format != null) {
+            format = data.format;
+        }  
         
+        var videoDataSource = new OSH.DataSource.VideoDataSource(data.name,data.url,{ type: format });
         dataViewGroup.push(videoDataSource.getId());
         
+        var codecs = "avc1.42401F";
+        if(data.codecs && data.codecs != null) {
+            codecs = data.codecs;
+        }
+        
+        var oshVideoView = new OSH.UI.VideoView("container-video-"+OSH.Utils.randomUUID(),{
+            type: format,
+            css: "video",
+            codecs : codecs
+        });
+              
         // associates video stream to video view
         oshVideoView.setDataViewId(videoDataSource.getId());
         

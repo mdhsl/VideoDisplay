@@ -1,9 +1,16 @@
 OSH.UI.SelectedVideoView = Class.create(OSH.UI.View,{
   initialize: function($super,divId,options) {
     $super(divId);
-    this.view = new OSH.UI.MJpegView("full-container-video",{
-        css:"video"
-    });
+    if(options.format && options.format == "mp4") {
+       this.view = new OSH.UI.Mp4View("full-container-video",{
+          css:"video",
+          codecs : options.codecs
+      });
+    } else {
+      this.view = new OSH.UI.MJpegView("full-container-video",{
+          css:"video"
+      });
+    }
     
     var div = document.getElementById(this.divId);
     div.appendChild(document.getElementById(this.view.getDivId()));
@@ -32,6 +39,7 @@ OSH.UI.SelectedVideoView = Class.create(OSH.UI.View,{
   },
   
   selectDataView: function($super,idArr) {
+    this.setDataViewId('');
     for(var j=0; j < idArr.length; j++) {
         //update view if
         if(this.viewIds.containsKey(idArr[j])) {

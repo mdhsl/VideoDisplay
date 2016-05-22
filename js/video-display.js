@@ -1,143 +1,289 @@
 function init(){
-  var replayFactor = 2;
-  var data = [];
-  // init the data. It's the same data at different time
-  function initData() {
-    var dat_1 = {
-      GPS_URL : "ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-02-16T08:00:00Z/2015-02-16T08:09:00Z&replaySpeed="+replayFactor,
-      ORIENTATION_URL : "ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/OrientationQuaternion&temporalFilter=phenomenonTime,2015-02-16T08:00:00Z/2015-02-16T08:09:00Z&replaySpeed="+replayFactor,
-      VIDEO_URL : "ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenomenonTime,2015-02-16T08:00:00Z/2015-02-16T08:09:00Z&replaySpeed="+replayFactor
-    }
-    
-    var dat_2 = {
-      GPS_URL : "ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-02-16T08:01:00Z/2015-02-16T08:09:00Z&replaySpeed="+replayFactor,
-      ORIENTATION_URL : "ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/OrientationQuaternion&temporalFilter=phenomenonTime,2015-02-16T08:01:00Z/2015-02-16T08:09:00Z&replaySpeed="+replayFactor,
-      VIDEO_URL : "ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenomenonTime,2015-02-16T08:01:00Z/2015-02-16T08:09:00Z&replaySpeed="+replayFactor
-    }
-    
-    var dat_3 = {
-      GPS_URL : "ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-02-16T08:02:00Z/2015-02-16T08:09:00Z&replaySpeed="+replayFactor,
-      ORIENTATION_URL : "ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/OrientationQuaternion&temporalFilter=phenomenonTime,2015-02-16T08:02:00Z/2015-02-16T08:09:00Z&replaySpeed="+replayFactor,
-      VIDEO_URL : "ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenomenonTime,2015-02-16T08:02:00Z/2015-02-16T08:09:00Z&replaySpeed="+replayFactor
-    }
-    
-    var dat_4 = {
-      GPS_URL : "ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-02-16T08:03:00Z/2015-02-16T08:09:00Z&replaySpeed="+replayFactor,
-      ORIENTATION_URL : "ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/OrientationQuaternion&temporalFilter=phenomenonTime,2015-02-16T08:03:00Z/2015-02-16T08:09:00Z&replaySpeed="+replayFactor,
-      VIDEO_URL : "ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenomenonTime,2015-02-16T08:03:00Z/2015-02-16T08:09:00Z&replaySpeed="+replayFactor
-    }
-    
-    var dat_5 = {
-      GPS_URL : "ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-02-16T08:04:00Z/2015-02-16T08:09:00Z&replaySpeed="+replayFactor,
-      ORIENTATION_URL : "ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/OrientationQuaternion&temporalFilter=phenomenonTime,2015-02-16T08:04:00Z/2015-02-16T08:09:00Z&replaySpeed="+replayFactor,
-      VIDEO_URL : "ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenomenonTime,2015-02-16T08:04:00Z/2015-02-16T08:09:00Z&replaySpeed="+replayFactor
-    }
-    data.push(dat_1);
-    data.push(dat_2);
-    data.push(dat_3);
-    data.push(dat_4);
-    data.push(dat_5);
-  }
-
-  function initStream() {
-    var dataSourceProvider = new OSH.DataSource.DataSourceProvider({
-        bufferingTime:3*1000, // 5 seconds
+  // init the controller and Websocket connections
+  var dataSourceProvider = new OSH.DataSource.DataSourceProvider({
+        bufferingTime:5*1000, // 5 seconds
         synchronizedTime: false // does not sync the data
-    });
-     
-    // creates controller 
-    var controller = new OSH.Controller();
-    controller.addDataSourceProvider(dataSourceProvider);
-
-    // creates a map view
-    var oshMapView = new OSH.UI.LeafletView("top-left");
-
-    //a view can be fed by a same stream
-    var oshCesiumView = new OSH.UI.CesiumView("bottom-left");
-    
-    //setup multiView to encapsulate the video divs
-    var oshMultiView = new OSH.UI.MultiComponentView("top-right");
-    
-    var selectedVideoView = new OSH.UI.SelectedVideoView("bottom-right");
-          
-    // adds views to controller
-    controller.addView(oshMapView);
-    controller.addView(oshCesiumView);
-    controller.addView(oshMultiView);
-    controller.addView(selectedVideoView);
-    
-    // iterates over data to create marker + video popups                
-    for (var i = 0; i < data.length; i++) {
-      //creates data sources
-      var latLonAltDataSource = new OSH.DataSource.LatLonAltDataSource("latLon-"+i,data[i].GPS_URL);
-      var orientationDataSource = new OSH.DataSource.OrientationQuaternionDataSource("orientation-"+i,data[i].ORIENTATION_URL);
-      var videoDataSource = new OSH.DataSource.VideoMjpegDataSource("video-"+i,data[i].VIDEO_URL);
+  });
+  
+  // creates controller 
+  var controller = new OSH.Controller();
+  controller.addDataSourceProvider(dataSourceProvider);  
+  
+   // creates a map view
+  var oshMapView = new OSH.UI.LeafletView("top-left");
+  //a view can be fed by a same stream
+  var oshCesiumView = new OSH.UI.CesiumView("bottom-left");
+  //setup multiView to encapsulate the video divs
+  var oshMultiView = new OSH.UI.MultiComponentView("top-right");
+  var selectedVideoView = new OSH.UI.SelectedVideoView("bottom-right",{
+      format : "mjpeg" // 'mjpeg' or 'mp4'
+      //codecs: "..." // mandatory for 'mp4' format
+  });
+  
+  // adds views to controller
+  controller.addView(oshMapView);
+  controller.addView(oshCesiumView);
+  controller.addView(oshMultiView);
+  controller.addView(selectedVideoView);
       
-      var oshVideoView = new OSH.UI.MJpegView("container-video-"+i,{
+  function addAssociatedData(associatedData) {
+    var latLonAltDataSourceId = null;
+    var orientationDataSourceId = null;
+    var videoDataSource = null;
+    var oshVideoView = null;
+    var dataViewGroup = [];
+    
+    for(var i = 0 ; i< associatedData.length; i++) {
+        var data = associatedData[i];
+      
+      var options = {};
+      if(data.androidShift) {
+        options["androidShift"] = data.androidShift;
+      }  
+      //check type
+      if(data.property == "http://sensorml.com/ont/swe/property/Location") {
+        latLonAltDataSource = new OSH.DataSource.LatLonAltDataSource(data.name,data.url,options);
+        dataSourceProvider.addDataSource(latLonAltDataSource);
+        dataViewGroup.push(latLonAltDataSource.getId());
+        latLonAltDataSourceId = latLonAltDataSource.getId();
+      } else if(data.property == "http://sensorml.com/ont/swe/property/OrientationQuaternion") {
+        orientationDataSource = new OSH.DataSource.OrientationQuaternionDataSource(data.name,data.url,options);
+        dataSourceProvider.addDataSource(orientationDataSource);
+        dataViewGroup.push(orientationDataSource.getId());
+        orientationDataSourceId = orientationDataSource.getId();
+      } else if(data.property == "http://sensorml.com/ont/swe/property/VideoFrame") {
+        var oshVideoView;
+        
+        if(data.format != null && data.format == 'video/mp4') {
+          videoDataSource = new OSH.DataSource.VideoMp4DataSource(data.name,data.url,options);
+          var codecs = "avc1.42401F";
+          if(data.codecs && data.codecs != null) {
+            codecs = data.codecs;
+          }
+          oshVideoView = new OSH.UI.Mp4View("container-video-"+OSH.Utils.randomUUID(),{
+            css:"video",
+            codecs:codecs
+          });
+        } else {
+          videoDataSource = new OSH.DataSource.VideoMjpegDataSource(data.name,data.url,options);
+          oshVideoView = new OSH.UI.MJpegView("container-video-"+OSH.Utils.randomUUID(),{
            css:"video"
-      });
-      
-      // associates video stream to video view
-      oshVideoView.setDataViewId(videoDataSource.getId());
-     
-      //set associated dataViews
-      
-      var dataViewGroup = [latLonAltDataSource.getId(),orientationDataSource.getId(),videoDataSource.getId()];
-      
+          });
+        }
+          
+        
+        dataViewGroup.push(videoDataSource.getId());
+        
+        // associates video stream to video view
+        oshVideoView.setDataViewId(videoDataSource.getId());
+        
+        // adds data sources to provider
+        dataSourceProvider.addDataSource(videoDataSource);
+      }
+    }
+    
+    if(videoDataSource != null) {
       oshVideoView.addAssociatedDataViews(dataViewGroup);
       selectedVideoView.addDataView(videoDataSource.getId(),dataViewGroup);
-      
       oshMultiView.addView(oshVideoView);
-      // adds marker to map
-      oshMapView.addDataMarker({
-        // associates GPS data to marker
-        latLonDataViewId:latLonAltDataSource.getId(),
-        orientationDataViewId:orientationDataSource.getId(),
-        displayPath: true,
-        associatedDataViews: dataViewGroup
-      });
-      
-      //set dataView
-      //add marker to map
-      oshCesiumView.addDataMarker({
-        latLonDataViewId:latLonAltDataSource.getId(),
-        orientationDataViewId:orientationDataSource.getId(),
-        associatedDataViews: dataViewGroup
-      });
-      
-      // adds data sources to provider
-      dataSourceProvider.addDataSource(latLonAltDataSource);
-      dataSourceProvider.addDataSource(orientationDataSource);
-      dataSourceProvider.addDataSource(videoDataSource);  
     }
-
-    // starts streaming
-    dataSourceProvider.connectAll();
-  
+    
+    // adds marker to map
+    oshMapView.addDataMarker({
+      // associates GPS data to marker
+      latLonDataViewId:latLonAltDataSourceId,
+      orientationDataViewId:orientationDataSourceId,
+      displayPath: true,
+      associatedDataViews: dataViewGroup
+    });
+    
+    //set dataView
+    //add marker to map
+    oshCesiumView.addDataMarker({
+      latLonDataViewId:latLonAltDataSourceId,
+      orientationDataViewId:orientationDataSourceId,
+      associatedDataViews: dataViewGroup
+    });
   }
   
-  // init the data
-  initData();
+  function changeView(id) {
+      var input = document.getElementById(id);
+      var action = (input.checked)? 'block' : 'none'; 
+      var divMapped;
+      
+      if(id == "2d") {
+        //top-left
+        divMapped = "top-left";
+      } else if(id == "3d") {
+        divMapped = "bottom-left";
+      } else if(id == "multi-video") {
+        divMapped = "top-right";
+      }else if(id == "full-video") {
+        divMapped = "bottom-right";
+      }
+      
+      document.getElementById(divMapped).parentElement.style.display = action;
+  };
 
-  // init the controller and Websocket connections
-  initStream();
-}
+  //Parse the selected file to add new sensors
+  ( function($) {
+    $(document).ready(function() {
+      document.getElementById('fileinput').addEventListener('change', function(){
+          var file = this.files[0];
+          var textType = /json.*/;
 
-function changeView(id) {
-    var input = document.getElementById(id);
-    var action = (input.checked)? 'block' : 'none'; 
-    var divMapped;
+          if (file!= 'undefined' && file.type.match(textType)) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+              getSensors(reader.result);
+            }
+
+            reader.readAsText(file);	
+          } else {
+            window.alert("File not supported, a .json file is expected");
+          }
+        }, false);
+    });
+  } ) (jQuery);
+
+  function getSensors(jsonString) {
+    var jsonObject = JSON.parse(jsonString);
+    //iterates over sources
+    var sources = jsonObject.sources;
+    var dataSourceOptions = jsonObject.dataSourceOptions;
     
-    if(id == "2d") {
-      //top-left
-      divMapped = "top-left";
-    } else if(id == "3d") {
-      divMapped = "bottom-left";
-    } else if(id == "multi-video") {
-      divMapped = "top-right";
-    }else if(id == "full-video") {
-      divMapped = "bottom-right";
+    //update provider data if needed
+    if(dataSourceOptions) {
+      //check if bufferingTime
+      if(dataSourceOptions.synchronizeData) {
+        dataSourceProvider.setSynchronized(dataSourceOptions.synchronizeData);
+      }
+      if(dataSourceOptions.replayFactor) {
+        dataSourceProvider.setReplayFactor(dataSourceOptions.replayFactor);
+      }
+      if(dataSourceOptions.bufferingTime) {
+        dataSourceProvider.setBufferingTime(dataSourceOptions.bufferingTime);
+      }
+      if(dataSourceOptions.startTime) {
+        dataSourceProvider.setStartDate(new Date(dataSourceOptions.startTime));
+      }
+    }
+    for(var i = 0; i < sources.length;i++) {
+      var source = sources[i];
+      var protocol = source.protocol;
+      var type = source.type;
+      var server = source.server;
+      var offeringID= source.offeringID;
+      
+      var startTime = "now";
+      var endTime = "2050-01-01T00:00:00Z";
+      var replayFactor = dataSourceProvider.getReplayFactor();
+      
+      if(source.startTime) {
+        startTime = source.startTime;
+      }
+      
+      if(source.endTime) {
+        endTime = source.endTime;
+      }
+      
+      var associatedData = [];
+      
+      //iterates over properties
+      var properties = source.properties;
+      for(var j=0; j < properties.length; j++) {
+        var property = properties[j];
+        var responseFormat = null;
+        if(property.format) {
+          responseFormat = property.format;
+        }
+        
+        var androidShift = false;
+        if(property.androidShift) {
+          androidShift = property.androidShift;
+        }
+        
+        var codecs = null;
+        if(property.codecs) {
+          codecs = property.codecs;
+        }        
+        associatedData.push({
+          name : property.name,
+          url : getURL(protocol,type,server,offeringID,property.property,startTime,endTime,replayFactor,responseFormat),
+          property : property.property,
+          format : responseFormat,
+          codecs: codecs,
+          androidShift : androidShift          
+        });
+      }
+      
+      addAssociatedData(associatedData);
     }
     
-    document.getElementById(divMapped).parentElement.style.display = action;
-};
+    // starts streaming
+    dataSourceProvider.connectAll();
+  }
+  /***
+   * 
+    ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&
+    version=2.0&
+    request=GetResult&
+    offering=urn:android:device:060693280a28e015-sos&
+    observedProperty=http://sensorml.com/ont/swe/property/Location&
+    temporalFilter=phenomenonTime,2015-02-16T08:00:00Z/2015-02-16T08:09:00Z&
+    replaySpeed="+replayFactor
+   * 
+   */ 
+  function getURL(protocol,type,server,offering,property, startTime, endTime,replayFactor,responseFormat) {
+    var url = protocol+"://"+server+"?";
+    //add service
+    url += "service="+type+"&";
+    //add version
+    url += "version=2.0&";
+    //add request
+    url += "request=GetResult&";
+    //add offering
+    url += "offering="+offering+"&";
+    //add observedProperty
+    url += "observedProperty="+property+"&";
+    //add temporalFilter
+    url += "temporalFilter=phenomenonTime,"+startTime+"/"+endTime;
+    
+    //add replaySpeed
+    if(replayFactor != null) {
+      url += "&replaySpeed="+replayFactor;
+    }
+    
+    if(responseFormat != null) {
+      url += "&responseFormat="+responseFormat;
+    }
+    
+    return url;
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

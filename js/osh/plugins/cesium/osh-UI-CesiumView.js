@@ -74,6 +74,14 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View,{
   },
   
   addDataMarker: function(params) {
+    if(!params.orientationDataViewId || !params.latLonDataViewId){
+        return;
+    }
+    
+    if(params.orientationDataViewId == null && params.latLonDataViewId == null) {
+      return;
+    }
+    
     // gps position
     var entity = this.viewer.entities.add({
         position: Cesium.Cartesian3.fromDegrees(0, 0, 0),
@@ -87,15 +95,20 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View,{
     var dataMarker= {
       orientationDataViewId: '',
       latLonDataViewId:'',
+      associatedDataViews: [],
       entity: entity
     };
     
-    if(params.orientationDataViewId) {
+    if(params.orientationDataViewId && params.orientationDataViewId != null) {
       dataMarker.orientationDataViewId = params.orientationDataViewId;
     }
     
-    if(params.latLonDataViewId) {
-       dataMarker.orientationDataViewId = params.latLonDataViewId;
+    if(params.latLonDataViewId && params.latLonDataViewId != null) {
+       dataMarker.latLonDataViewId = params.latLonDataViewId;
+    }
+    
+    if(params.associatedDataViews) {
+      dataMarker.associatedDataViews = params.associatedDataViews;
     }
     
     this.dataMarkers.push(dataMarker);
@@ -117,9 +130,9 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View,{
     for(var i=0;i < this.dataMarkers.length;i++) {
       var dataMarker = this.dataMarkers[i];
       if(dataMarker.orientationDataViewId == dataViewId) {
-        this.updateDataMarkerPosition(dataMarker, data);
-      } else if(dataMarker.latLonDataViewId == dataViewId) {
         this.updateDataMarkerOrientation(dataMarker,data);
+      } else if(dataMarker.latLonDataViewId == dataViewId) {
+        this.updateDataMarkerPosition(dataMarker, data);
       }
     }
   },
@@ -153,14 +166,29 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View,{
   },
   
   selectDataView: function($super,idArr) {
+    var select = false;
     for(var i=0;i < this.dataMarkers.length; i++) {
       var dataMarker = this.dataMarkers[i];
-      if(idArr.indexOf(dataMarker.orientationDataViewId) >=0 ){
-        //select entity
-        this.viewer.selectedEntity =  dataMarker.entity;                                      
-        //this.viewer.trackedEntity =  dataMarker.entity;
+      if(idArr.indexOf(dataMarker.latLonDataViewId) >=0 ||
+         idArr.indexOf(dataMarker.orientationDataViewId) >=0) {
+         select = true;
+      } else {
+        for(var j= 0 ; j < dataMarker.associatedDataViews.length;j++) {
+          var associatedView = dataMarker.associatedDataViews[j];
+          if(idArr.indexOf(associatedView) >=0) {
+            select = true;
+            break;
+          }
+        }
+      }
+      if(select) {
         break;
-      } 
+      }
+    }
+    if(select) {
+      //select entity
+      this.viewer.selectedEntity =  dataMarker.entity;                                      
+      //this.viewer.trackedEntity =  dataMarker.entity;
     }
   }
 });

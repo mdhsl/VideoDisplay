@@ -27,6 +27,14 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View,{
   },
   
   addDataMarker: function(params) {
+    if(!params.orientationDataViewId || !params.latLonDataViewId){
+        return;
+    }
+    
+    if(params.orientationDataViewId == null && params.latLonDataViewId == null) {
+      return;
+    }
+    
     var dataMarker = new OSH.UI.LeafletMarkerView(this.divId);
     
     if(params.orientationDataViewId) {

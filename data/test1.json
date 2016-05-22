@@ -1,0 +1,121 @@
+{
+  "dataSourceOptions": {
+    "synchronizeData" : true,
+    "replayFactor" : 2,
+    "bufferingTime": 5000
+  },
+  "sources":[
+    {
+      "protocol" : "ws",
+      "type": "SOS",
+      "server":"sensiasoft.net:8181/sensorhub/sos",
+      "offeringID":"urn:android:device:060693280a28e015-sos",
+      "properties" : [
+        {
+          "property":"http://sensorml.com/ont/swe/property/Location",
+          "name":"gps-0",
+          "androidShift": true
+        },
+        {
+          "property":"http://sensorml.com/ont/swe/property/OrientationQuaternion",
+          "name":"orient-0"
+        },
+        {
+          "property":"http://sensorml.com/ont/swe/property/VideoFrame",
+          "name":"video-0"
+        }
+      ],
+      "startTime" : "2015-02-16T08:00:00Z",
+      "endTime": "2015-02-16T08:09:00Z"
+    },
+    {
+      "protocol" : "ws",
+      "type": "SOS",
+      "server":"sensiasoft.net:8181/sensorhub/sos",
+      "offeringID":"urn:android:device:060693280a28e015-sos",
+      "properties" : [
+        {
+          "property":"http://sensorml.com/ont/swe/property/Location",
+          "name":"gps-1"
+        },
+        {
+          "property":"http://sensorml.com/ont/swe/property/OrientationQuaternion",
+          "name":"orient-1"
+        },
+        {
+          "property":"http://sensorml.com/ont/swe/property/VideoFrame",
+          "name":"video-1"
+        }
+      ],
+      "startTime" : "2015-02-16T08:01:00Z",
+      "endTime": "2015-02-16T08:09:00Z"
+    },
+    {
+      "protocol" : "ws",
+      "type": "SOS",
+      "server":"sensiasoft.net:8181/sensorhub/sos",
+      "offeringID":"urn:android:device:060693280a28e015-sos",
+      "properties" : [
+        {
+          "property":"http://sensorml.com/ont/swe/property/Location",
+          "name":"gps-2"
+        },
+        {
+          "property":"http://sensorml.com/ont/swe/property/OrientationQuaternion",
+          "name":"orient-2"
+        },
+        {
+          "property":"http://sensorml.com/ont/swe/property/VideoFrame",
+          "name":"video-2"
+        }
+      ],
+      "startTime" : "2015-02-16T08:02:00Z",
+      "endTime": "2015-02-16T08:09:00Z"
+    },
+    {
+      "protocol" : "ws",
+      "type": "SOS",
+      "server":"sensiasoft.net:8181/sensorhub/sos",
+      "offeringID":"urn:android:device:060693280a28e015-sos",
+      "properties" : [
+        {
+          "property":"http://sensorml.com/ont/swe/property/Location",
+          "name":"gps-3"
+        },
+        {
+          "property":"http://sensorml.com/ont/swe/property/OrientationQuaternion",
+          "name":"orient-3"
+        },
+        {
+          "property":"http://sensorml.com/ont/swe/property/VideoFrame",
+          "name":"video-3"
+        }
+      ],
+      "startTime" : "2015-02-16T08:03:00Z",
+      "endTime": "2015-02-16T08:09:00Z"
+    },
+    {
+      "protocol" : "ws",
+      "type": "SOS",
+      "server":"sensiasoft.net:8181/sensorhub/sos",
+      "offeringID":"urn:android:device:060693280a28e015-sos",
+      "properties" : [
+        {
+          "property":"http://sensorml.com/ont/swe/property/Location",
+          "name":"gps-4"
+        },
+        {
+          "property":"http://sensorml.com/ont/swe/property/OrientationQuaternion",
+          "name":"orient-4"
+        },
+        {
+          "property":"http://sensorml.com/ont/swe/property/VideoFrame",
+          "name":"video-4"
+        }
+      ],
+      "startTime" : "2015-02-16T08:04:00Z",
+      "endTime": "2015-02-16T08:09:00Z"
+    }
+    
+  ]
+}

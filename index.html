@@ -44,15 +44,24 @@
       </div>
     </div>
   </nav>
-  <div class="dropdown">
-    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Views
-    <span class="caret"></span></button>
-    <ul class="dropdown-menu">
-       <li><label class="checkbox"><input type="checkbox" checked id="2d" onclick="changeView(this.id)">2D</label></li>
-       <li><label class="checkbox"><input type="checkbox" checked id="3d" onclick="changeView(this.id)">3D</label></li>
-       <li><label class="checkbox"><input type="checkbox" checked id="multi-video" onclick="changeView(this.id)">Multi Video</label></li>
-       <li><label class="checkbox"><input type="checkbox" checked id="full-video" onclick="changeView(this.id)">Full Video</label></li>
-    </ul>
+  <div class = "btn-group">
+   <button type = "button" class = "btn btn-primary dropdown-toggle glyphicon glyphicon-cog btn-settings" data-toggle = "dropdown"><span class = "caret"></span></button>
+   <ul class = "dropdown-menu" role = "menu">
+      <li><input type="file" id="fileinput" /></li>
+   </ul>
+  </div>
+
+  <div class = "btn-group">
+     <button type = "button" class = "btn btn-primary dropdown-toggle" data-toggle = "dropdown">
+        Views 
+        <span class = "caret"></span>
+     </button>
+     <ul class = "dropdown-menu" role = "menu">
+      <li><label class="checkbox"><input type="checkbox" checked id="2d" onclick="changeView(this.id)">2D</label></li>
+      <li><label class="checkbox"><input type="checkbox" checked id="3d" onclick="changeView(this.id)">3D</label></li>
+      <li><label class="checkbox"><input type="checkbox" checked id="multi-video" onclick="changeView(this.id)">Multi Video</label></li>
+      <li><label class="checkbox"><input type="checkbox" checked id="full-video" onclick="changeView(this.id)">Full Video</label></li>
+     </ul>
   </div>
   <div class="row">
     <div class="col-xs-6 box top-left "><div id="top-left" class="box-content"></div></div>

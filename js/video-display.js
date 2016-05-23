@@ -15,16 +15,21 @@ function init(){
   var oshCesiumView = new OSH.UI.CesiumView("bottom-left");
   //setup multiView to encapsulate the video divs
   var oshMultiView = new OSH.UI.MultiComponentView("top-right");
-  var selectedVideoView = new OSH.UI.SelectedVideoView("bottom-right",{
-      format : "mjpeg" // 'mjpeg' or 'mp4' or 'h264'
-      //codecs: "..." // mandatory for 'mp4' format
+  var oshChartView = new OSH.UI.D3ChartView("bottom-right",{
+       css: "video",
+       yLabel: "Test label Y"
   });
+  //var selectedVideoView = new OSH.UI.SelectedVideoView("bottom-right",{
+  //    format : "mjpeg" // 'mjpeg' or 'mp4' or 'h264'
+      //codecs: "..." // mandatory for 'mp4' format
+  //});
   
   // adds views to controller
   controller.addView(oshMapView);
   controller.addView(oshCesiumView);
   controller.addView(oshMultiView);
-  controller.addView(selectedVideoView);
+  controller.addView(oshChartView);
+  //controller.addView(selectedVideoView);
       
   function addAssociatedData(associatedData) {
     var latLonAltDataSourceId = null;
@@ -32,6 +37,8 @@ function init(){
     var videoDataSource = null;
     var oshVideoView = null;
     var dataViewGroup = [];
+    var chartDataSourceId = null;
+    var curveName = "curve-"+OSH.Utils.randomUUID();
     
     for(var i = 0 ; i< associatedData.length; i++) {
         var data = associatedData[i];
@@ -54,6 +61,21 @@ function init(){
         dataSourceProvider.addDataSource(orientationDataSource);
         dataViewGroup.push(orientationDataSource.getId());
         orientationDataSourceId = orientationDataSource.getId();
+      }else if(data.property == "http://sensorml.com/ont/swe/property/BodyTemperature"
+              || data.property == "http://sensorml.com/ont/swe/property/HeartRate" ||
+                 data.property == "http://sensorml.com/ont/swe/property/Weather" ) {
+        
+          chartDataSource = new OSH.DataSource.ChartDataSource(data.name,data.url,options);
+          dataSourceProvider.addDataSource(chartDataSource);
+          dataViewGroup.push(chartDataSource.getId());
+          chartDataSourceId = chartDataSource.getId();
+          curveName = data.name;
+          
+          //add curve to chart
+          oshChartView.addCurve({
+              name: curveName,
+              dataViewId: chartDataSourceId
+          });
       } else if(data.property == "http://sensorml.com/ont/swe/property/VideoFrame") {
         var oshVideoView;
         
@@ -86,26 +108,28 @@ function init(){
     
     if(videoDataSource != null) {
       oshVideoView.addAssociatedDataViews(dataViewGroup);
-      selectedVideoView.addDataView(videoDataSource.getId(),dataViewGroup);
+      //selectedVideoView.addDataView(videoDataSource.getId(),dataViewGroup);
       oshMultiView.addView(oshVideoView);
     }
     
-    // adds marker to map
-    oshMapView.addDataMarker({
-      // associates GPS data to marker
-      latLonDataViewId:latLonAltDataSourceId,
-      orientationDataViewId:orientationDataSourceId,
-      displayPath: true,
-      associatedDataViews: dataViewGroup
-    });
-    
-    //set dataView
-    //add marker to map
-    oshCesiumView.addDataMarker({
-      latLonDataViewId:latLonAltDataSourceId,
-      orientationDataViewId:orientationDataSourceId,
-      associatedDataViews: dataViewGroup
-    });
+    if(latLonAltDataSourceId != null || orientationDataSourceId != null) {
+      // adds marker to map
+      oshMapView.addDataMarker({
+        // associates GPS data to marker
+        latLonDataViewId:latLonAltDataSourceId,
+        orientationDataViewId:orientationDataSourceId,
+        displayPath: true,
+        associatedDataViews: dataViewGroup
+      });
+      
+      //set dataView
+      //add marker to map
+      oshCesiumView.addDataMarker({
+        latLonDataViewId:latLonAltDataSourceId,
+        orientationDataViewId:orientationDataSourceId,
+        associatedDataViews: dataViewGroup
+      });
+    }
   }
   
   function changeView(id) {

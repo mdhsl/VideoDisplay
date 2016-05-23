@@ -42,7 +42,8 @@ function init(){
       }  
       //check type
       if(data.property == "http://sensorml.com/ont/swe/property/Location" || 
-        data.property == "http://www.opengis.net/def/property/OGC/0/SensorLocation") {
+        data.property == "http://www.opengis.net/def/property/OGC/0/SensorLocation" ||
+        data.property == "http://www.opengis.net/def/property/OGC/0/TargetLocation") {
         
         latLonAltDataSource = new OSH.DataSource.LatLonAltDataSource(data.name,data.url,options);
         dataSourceProvider.addDataSource(latLonAltDataSource);

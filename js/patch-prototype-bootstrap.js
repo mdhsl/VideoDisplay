@@ -22,5 +22,12 @@ if (Prototype.BrowserFeatures.ElementExtensions) {
     $('ul.dropdown-menu').click(function(e){
       e.stopPropagation();
      });
+    /*$('.btn').click(function(e) {
+	    e.preventDefault();
+	    $(this).addClass('active');
+    });*/
   });
 } ) ( jQuery );
+
+
+
